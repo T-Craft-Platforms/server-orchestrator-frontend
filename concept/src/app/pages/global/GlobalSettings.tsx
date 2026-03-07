@@ -1,0 +1,204 @@
+import { Settings as SettingsIcon, Globe, Shield, Database, Bell } from 'lucide-react';
+import { Card, CardContent, CardHeader, CardTitle } from '../../components/ui/card';
+import { Button } from '../../components/ui/button';
+import { Input } from '../../components/ui/input';
+import { Label } from '../../components/ui/label';
+import { Switch } from '../../components/ui/switch';
+
+export function GlobalSettings() {
+  return (
+    <div className="min-h-screen bg-slate-950 text-white p-6">
+      <div className="max-w-5xl mx-auto">
+        {/* Header */}
+        <div className="mb-8">
+          <div className="flex items-center gap-2 mb-2">
+            <Globe className="w-8 h-8 text-blue-500" />
+            <h1 className="text-3xl font-bold">Global Settings</h1>
+          </div>
+          <p className="text-slate-400">Cluster-wide configuration and preferences</p>
+        </div>
+
+        <div className="space-y-6">
+          {/* Cluster Configuration */}
+          <Card className="bg-slate-900 border-slate-800">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <SettingsIcon className="w-5 h-5 text-blue-500" />
+                Cluster Configuration
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <Label htmlFor="cluster-name">Cluster Name</Label>
+                  <Input
+                    id="cluster-name"
+                    defaultValue="production-cluster"
+                    className="mt-2 bg-slate-800 border-slate-700"
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="k8s-version">Kubernetes Version</Label>
+                  <Input
+                    id="k8s-version"
+                    defaultValue="v1.28.3"
+                    className="mt-2 bg-slate-800 border-slate-700"
+                    disabled
+                  />
+                </div>
+              </div>
+              <div>
+                <Label htmlFor="api-endpoint">API Endpoint</Label>
+                <Input
+                  id="api-endpoint"
+                  defaultValue="https://api.cluster.local:6443"
+                  className="mt-2 bg-slate-800 border-slate-700"
+                />
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Resource Quotas */}
+          <Card className="bg-slate-900 border-slate-800">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Database className="w-5 h-5 text-purple-500" />
+                Default Resource Quotas
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <Label htmlFor="default-cpu">Default CPU Limit (millicores)</Label>
+                  <Input
+                    id="default-cpu"
+                    type="number"
+                    defaultValue="2000"
+                    className="mt-2 bg-slate-800 border-slate-700"
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="default-memory">Default Memory Limit (MB)</Label>
+                  <Input
+                    id="default-memory"
+                    type="number"
+                    defaultValue="4096"
+                    className="mt-2 bg-slate-800 border-slate-700"
+                  />
+                </div>
+              </div>
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <Label htmlFor="max-servers">Max Servers per Namespace</Label>
+                  <Input
+                    id="max-servers"
+                    type="number"
+                    defaultValue="20"
+                    className="mt-2 bg-slate-800 border-slate-700"
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="max-storage">Max Storage per Namespace (GB)</Label>
+                  <Input
+                    id="max-storage"
+                    type="number"
+                    defaultValue="500"
+                    className="mt-2 bg-slate-800 border-slate-700"
+                  />
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Security Settings */}
+          <Card className="bg-slate-900 border-slate-800">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Shield className="w-5 h-5 text-green-500" />
+                Security & RBAC
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="flex items-center justify-between p-3 rounded-lg bg-slate-800/50">
+                <div>
+                  <h4 className="font-medium">Enforce Pod Security Standards</h4>
+                  <p className="text-sm text-slate-400 mt-1">
+                    Apply baseline security policies to all namespaces
+                  </p>
+                </div>
+                <Switch defaultChecked />
+              </div>
+              <div className="flex items-center justify-between p-3 rounded-lg bg-slate-800/50">
+                <div>
+                  <h4 className="font-medium">Enable Network Policies</h4>
+                  <p className="text-sm text-slate-400 mt-1">
+                    Isolate namespace traffic by default
+                  </p>
+                </div>
+                <Switch defaultChecked />
+              </div>
+              <div className="flex items-center justify-between p-3 rounded-lg bg-slate-800/50">
+                <div>
+                  <h4 className="font-medium">Require Image Signatures</h4>
+                  <p className="text-sm text-slate-400 mt-1">
+                    Only allow signed container images
+                  </p>
+                </div>
+                <Switch />
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Notifications */}
+          <Card className="bg-slate-900 border-slate-800">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Bell className="w-5 h-5 text-orange-500" />
+                Notifications
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="flex items-center justify-between p-3 rounded-lg bg-slate-800/50">
+                <div>
+                  <h4 className="font-medium">Server Failures</h4>
+                  <p className="text-sm text-slate-400 mt-1">
+                    Get notified when servers crash or fail
+                  </p>
+                </div>
+                <Switch defaultChecked />
+              </div>
+              <div className="flex items-center justify-between p-3 rounded-lg bg-slate-800/50">
+                <div>
+                  <h4 className="font-medium">Resource Warnings</h4>
+                  <p className="text-sm text-slate-400 mt-1">
+                    Alert when resources exceed thresholds
+                  </p>
+                </div>
+                <Switch defaultChecked />
+              </div>
+              <div className="flex items-center justify-between p-3 rounded-lg bg-slate-800/50">
+                <div>
+                  <h4 className="font-medium">Security Alerts</h4>
+                  <p className="text-sm text-slate-400 mt-1">
+                    Notify on security policy violations
+                  </p>
+                </div>
+                <Switch defaultChecked />
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Actions */}
+          <div className="flex justify-end gap-3">
+            <Button variant="outline" className="border-slate-700">
+              Reset to Defaults
+            </Button>
+            <Button className="bg-blue-600 hover:bg-blue-700">
+              Save Changes
+            </Button>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
