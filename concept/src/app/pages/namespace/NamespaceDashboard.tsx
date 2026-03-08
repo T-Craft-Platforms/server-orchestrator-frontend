@@ -21,11 +21,11 @@ export function NamespaceDashboard() {
   
   if (!namespace || !selectedNamespace) {
     return (
-      <div className="min-h-screen bg-slate-950 text-white p-4 sm:p-6 flex items-center justify-center">
+      <div className="min-h-screen bg-transparent text-white p-4 sm:p-6 flex items-center justify-center">
         <div className="text-center">
           <Layers className="w-12 h-12 text-slate-600 mx-auto mb-4" />
           <h2 className="text-xl font-semibold mb-2">No Project Selected</h2>
-          <p className="text-slate-400">Please select a project from the dropdown</p>
+          <p className="text-slate-400">Please select a project from the sidebar tree</p>
         </div>
       </div>
     );
@@ -44,7 +44,7 @@ export function NamespaceDashboard() {
     : 0;
 
   return (
-    <div className="min-h-screen bg-slate-950 text-white p-4 sm:p-6">
+    <div className="min-h-screen bg-transparent text-white p-4 sm:p-6">
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <div className="mb-8">

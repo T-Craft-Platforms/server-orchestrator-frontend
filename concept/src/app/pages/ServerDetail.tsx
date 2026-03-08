@@ -70,7 +70,7 @@ export function ServerDetail() {
 
   if (!server) {
     return (
-      <div className="min-h-screen bg-slate-950 text-white p-4 sm:p-6 flex items-center justify-center">
+      <div className="min-h-screen bg-transparent text-white p-4 sm:p-6 flex items-center justify-center">
         <div className="text-center">
           <ServerIcon className="w-12 h-12 text-slate-600 mx-auto mb-4" />
           <h2 className="text-xl font-semibold mb-2">Server not found</h2>
@@ -100,7 +100,7 @@ export function ServerDetail() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-950 text-white">
+    <div className="min-h-screen bg-transparent text-white">
       {/* Header */}
       <div className="bg-slate-900 border-b border-slate-800 p-4 sm:p-6">
         <div className="max-w-7xl mx-auto">

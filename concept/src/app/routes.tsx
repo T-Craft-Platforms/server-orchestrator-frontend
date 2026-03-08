@@ -16,6 +16,7 @@ import { NamespaceUsers } from "./pages/namespace/NamespaceUsers";
 import { TemplateDetail } from "./pages/TemplateDetail";
 import { ResourceDetail } from "./pages/ResourceDetail";
 import { NamespaceSettings } from "./pages/namespace/NamespaceSettings";
+import { UserSettings } from "./pages/user/UserSettings";
 
 function ProjectRouteRedirect() {
   const { id } = useParams();
@@ -45,6 +46,7 @@ export const router = createBrowserRouter([
       { path: "global/users", Component: GlobalUsers },
       { path: "global/users/:id", Component: GlobalUserDetail },
       { path: "global/settings", Component: GlobalSettings },
+      { path: "user/settings", Component: UserSettings },
       
       // Namespace Routes
       { path: "namespace/:identifier/dashboard", Component: NamespaceDashboard },

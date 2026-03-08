@@ -10,14 +10,17 @@ import {
   Settings,
   Globe,
   Users,
-  Search
+  Search,
+  UserCircle2
 } from 'lucide-react';
 import { Button } from '../components/ui/button';
 import { useEffect, useMemo, useState } from 'react';
 import { useNamespace } from '../context/NamespaceContext';
+import { useUserPreferences } from '../context/UserPreferencesContext';
 import { mockNamespaces } from '../data/mockData';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '../components/ui/dialog';
 import { Input } from '../components/ui/input';
+import { getNamespaceVisual } from '../utils/namespaceVisuals';
 
 const globalNavigation = [
   { name: 'Dashboard', href: '/global/dashboard', icon: LayoutDashboard },
@@ -35,13 +38,15 @@ export function RootLayout() {
   const [isNamespaceTreeOpen, setIsNamespaceTreeOpen] = useState(false);
   const [namespaceSearch, setNamespaceSearch] = useState('');
   const { selectedNamespace, setSelectedNamespace } = useNamespace();
+  const { preferences } = useUserPreferences();
   const scopePathMatch = location.pathname.match(/^\/(namespace|project)\/([^/]+)(?:\/|$)/);
   const scopePrefix = (scopePathMatch?.[1] as 'namespace' | 'project' | undefined) ?? 'namespace';
   const routeNamespaceId = scopePathMatch?.[2] ?? null;
   const fallbackNamespaceId = mockNamespaces[0]?.id ?? null;
   const activeNamespaceId = routeNamespaceId ?? selectedNamespace ?? fallbackNamespaceId;
+  const isNamespaceRoute = Boolean(scopePathMatch);
   
-  const isGlobalRoute = location.pathname === '/' || location.pathname.startsWith('/global');
+  const isGlobalRoute = !isNamespaceRoute;
   const navigation = useMemo(() => {
     if (isGlobalRoute || !activeNamespaceId) {
       return globalNavigation;
@@ -90,6 +95,10 @@ export function RootLayout() {
       return searchable.includes(normalizedNamespaceSearch);
     });
   }, [normalizedNamespaceSearch]);
+  const namespaceVisual = useMemo(() => (
+    activeNamespaceId ? getNamespaceVisual(activeNamespaceId) : null
+  ), [activeNamespaceId]);
+  const showNamespaceBackdrop = isNamespaceRoute && preferences.namespaceBackdropEnabled && Boolean(namespaceVisual);
 
   const isActive = (href: string) => {
     if (href === '/global/dashboard' && location.pathname === '/') {
@@ -310,6 +319,23 @@ export function RootLayout() {
 
           {/* Footer info */}
           <div className="p-4 border-t border-slate-800">
+            <Link
+              to="/user/settings"
+              onClick={() => setMobileMenuOpen(false)}
+              className={`mb-3 flex items-center gap-3 rounded-lg border px-3 py-2 transition-colors ${
+                location.pathname.startsWith('/user/settings')
+                  ? 'border-cyan-700/70 bg-cyan-900/20'
+                  : 'border-slate-700 bg-slate-800/70 hover:bg-slate-800'
+              }`}
+            >
+              <div className="flex h-9 w-9 items-center justify-center rounded-full bg-cyan-500/15 text-cyan-300">
+                <UserCircle2 className="h-5 w-5" />
+              </div>
+              <div className="min-w-0">
+                <p className="truncate text-sm font-medium text-white">Admin-1</p>
+                <p className="truncate text-xs text-slate-400">User Settings</p>
+              </div>
+            </Link>
             <div className="bg-slate-800 rounded-lg p-3">
               <div className="flex items-center justify-between mb-1">
                 <span className="text-xs text-slate-400">Docker Fleet Status</span>
@@ -333,8 +359,19 @@ export function RootLayout() {
       )}
 
       {/* Main content */}
-      <main className="lg:ml-64 pt-16 lg:pt-0">
-        <Outlet />
+      <main className="relative lg:ml-64 pt-16 lg:pt-0">
+        {showNamespaceBackdrop && namespaceVisual && (
+          <div className="pointer-events-none absolute inset-0 overflow-hidden">
+            <div
+              className="absolute -inset-24 scale-110 opacity-70 blur-3xl"
+              style={{ backgroundImage: namespaceVisual.pageBackdrop }}
+            />
+            <div className="absolute inset-0 bg-slate-950/60" />
+          </div>
+        )}
+        <div className="relative z-10">
+          <Outlet />
+        </div>
       </main>
     </div>
   );

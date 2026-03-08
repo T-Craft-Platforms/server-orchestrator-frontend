@@ -9,6 +9,7 @@ import { mockNamespaces } from '../../data/mockData';
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '../../components/ui/dialog';
 import { Label } from '../../components/ui/label';
 import { Textarea } from '../../components/ui/textarea';
+import { getNamespaceVisual } from '../../utils/namespaceVisuals';
 
 export function Namespaces() {
   const [searchQuery, setSearchQuery] = useState('');
@@ -95,56 +96,65 @@ export function Namespaces() {
 
         {/* Projects Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {filteredNamespaces.map((namespace) => (
-            <Link key={namespace.id} to={`/namespace/${namespace.id}/dashboard`}>
-              <Card className="bg-slate-900 border-slate-800 hover:border-slate-700 transition-colors h-full">
-                <CardContent className="p-6">
-                  <div className="flex items-start justify-between mb-4">
-                    <div className="flex items-center gap-3">
-                      <div className="p-2 rounded-lg bg-purple-600/20">
-                        <Layers className="w-6 h-6 text-purple-400" />
-                      </div>
-                      <div>
-                        <h3 className="font-semibold text-lg">{namespace.name}</h3>
-                        <p className="text-xs text-slate-400">
-                          Created {new Date(namespace.createdAt).toLocaleDateString()}
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-
-                  <p className="text-sm text-slate-400 mb-4 line-clamp-2">
-                    {namespace.description}
-                  </p>
-
-                  <div className="grid grid-cols-2 gap-3 mb-4">
-                    <div className="p-3 rounded-lg bg-slate-800/50">
-                      <div className="flex items-center gap-2 mb-1">
-                        <Server className="w-4 h-4 text-blue-400" />
-                        <span className="text-xs text-slate-400">Servers</span>
-                      </div>
-                      <p className="text-xl font-semibold">{namespace.serverCount}</p>
-                    </div>
-                    <div className="p-3 rounded-lg bg-slate-800/50">
-                      <div className="flex items-center gap-2 mb-1">
-                        <FileBox className="w-4 h-4 text-orange-400" />
-                        <span className="text-xs text-slate-400">Resources</span>
-                      </div>
-                      <p className="text-xl font-semibold">{namespace.resourceCount}</p>
-                    </div>
-                  </div>
-
-                  <div className="flex gap-1 flex-wrap">
-                    {namespace.labels.map((label) => (
-                      <Badge key={label} variant="outline" className="text-xs border-slate-700">
-                        {label}
+          {filteredNamespaces.map((namespace) => {
+            const visual = getNamespaceVisual(namespace.id);
+            return (
+              <Link key={namespace.id} to={`/namespace/${namespace.id}/dashboard`}>
+                <Card className="group overflow-hidden border-slate-800/80 bg-slate-900/85 h-full transition-all duration-300 hover:border-slate-600 hover:shadow-[0_14px_40px_-22px_rgba(14,165,233,0.45)]">
+                  <div className="relative h-36 overflow-hidden">
+                    <div className="absolute inset-0 scale-105 transition-transform duration-300 group-hover:scale-110" style={{ backgroundImage: visual.cardImage }} />
+                    <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-900/35 to-transparent" />
+                    <div className="absolute left-4 right-4 top-4 flex items-start justify-between">
+                      <Badge variant="outline" className="border-white/30 bg-slate-950/40 text-slate-100">
+                        {namespace.id}
                       </Badge>
-                    ))}
+                      <div className="rounded-lg p-2 backdrop-blur-md" style={{ backgroundColor: 'rgba(2, 6, 23, 0.35)' }}>
+                        <Layers className="w-5 h-5 text-slate-100" />
+                      </div>
+                    </div>
+                    <div className="absolute left-4 right-4 bottom-4">
+                      <h3 className="text-lg font-semibold text-white">{namespace.name}</h3>
+                    </div>
                   </div>
-                </CardContent>
-              </Card>
-            </Link>
-          ))}
+
+                  <CardContent className="p-5">
+                    <p className="text-sm text-slate-300/90 mb-4 line-clamp-2">
+                      {namespace.description}
+                    </p>
+
+                    <div className="grid grid-cols-2 gap-3 mb-4">
+                      <div className="rounded-lg border border-slate-700/70 bg-slate-800/45 p-3">
+                        <div className="mb-1 flex items-center gap-2">
+                          <Server className="w-4 h-4 text-blue-300" />
+                          <span className="text-xs text-slate-400">Servers</span>
+                        </div>
+                        <p className="text-xl font-semibold">{namespace.serverCount}</p>
+                      </div>
+                      <div className="rounded-lg border border-slate-700/70 bg-slate-800/45 p-3">
+                        <div className="mb-1 flex items-center gap-2">
+                          <FileBox className="w-4 h-4 text-orange-300" />
+                          <span className="text-xs text-slate-400">Resources</span>
+                        </div>
+                        <p className="text-xl font-semibold">{namespace.resourceCount}</p>
+                      </div>
+                    </div>
+
+                    <div className="mb-3 flex gap-1 flex-wrap">
+                      {namespace.labels.map((label) => (
+                        <Badge key={label} variant="outline" className="text-xs border-slate-600/80 bg-slate-800/40">
+                          {label}
+                        </Badge>
+                      ))}
+                    </div>
+
+                    <p className="text-xs text-slate-500">
+                      Created {new Date(namespace.createdAt).toLocaleDateString()}
+                    </p>
+                  </CardContent>
+                </Card>
+              </Link>
+            );
+          })}
         </div>
 
         {filteredNamespaces.length === 0 && (
