@@ -1,5 +1,5 @@
 import { useParams, Link } from 'react-router';
-import { ArrowLeft, Layers, Server, FileBox, Settings, Users } from 'lucide-react';
+import { ArrowLeft, Layers, Server, FileBox, Settings, Users, Plus } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card';
 import { Button } from '../components/ui/button';
 import { Badge } from '../components/ui/badge';

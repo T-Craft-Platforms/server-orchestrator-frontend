@@ -7,6 +7,8 @@ import { Button } from '../../components/ui/button';
 import { Input } from '../../components/ui/input';
 import { Badge } from '../../components/ui/badge';
 import { mockTemplates } from '../../data/mockData';
+import { versionManager } from '../../data/versionManager';
+import { useVersionManagerSnapshot } from '../../data/useVersionManager';
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '../../components/ui/dialog';
 import { Label } from '../../components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../../components/ui/select';
@@ -17,6 +19,7 @@ import { DeployServerDialog } from '../../components/DeployServerDialog';
 import type { Template } from '../../types';
 
 export function GlobalTemplates() {
+  useVersionManagerSnapshot();
   const [templates, setTemplates] = useState<Template[]>([...mockTemplates]);
   const [searchQuery, setSearchQuery] = useState('');
   const [isCreateOpen, setIsCreateOpen] = useState(false);
@@ -103,6 +106,7 @@ export function GlobalTemplates() {
 
     setTemplates((current) => [nextTemplate, ...current]);
     mockTemplates.unshift(nextTemplate);
+    versionManager.registerTemplate(nextTemplate, 'operator');
     setIsCreateOpen(false);
     resetForm();
   };

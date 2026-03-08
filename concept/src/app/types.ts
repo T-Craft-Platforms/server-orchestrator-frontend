@@ -66,6 +66,45 @@ export interface Resource {
   fileTree?: FileNode[];
 }
 
+export type VersionLifecycleStatus = 'draft' | 'active' | 'deprecated' | 'archived';
+
+export interface VersionChange {
+  author: string;
+  summary: string;
+  createdAt: string;
+}
+
+export interface ResourceVersion {
+  id: string;
+  resourceId: string;
+  version: string;
+  status: VersionLifecycleStatus;
+  size: string;
+  changelog: string;
+  createdAt: string;
+  promotedAt?: string;
+  fileTree?: FileNode[];
+  labelsSnapshot: string[];
+  metadata: VersionChange;
+}
+
+export interface TemplateVersion {
+  id: string;
+  templateId: string;
+  version: string;
+  status: VersionLifecycleStatus;
+  changelog: string;
+  createdAt: string;
+  promotedAt?: string;
+  minecraftVersion: string;
+  javaVersion: string;
+  defaultMemory: string;
+  defaultCpu: string;
+  restrictionsSnapshot: Template['restrictions'];
+  placeholdersSnapshot: TemplatePlaceholder[];
+  metadata: VersionChange;
+}
+
 export interface FileNode {
   name: string;
   path: string;

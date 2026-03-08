@@ -15,7 +15,18 @@ import { Badge } from '../components/ui/badge';
 import { Button } from '../components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card';
 import { mockNamespaces, mockResources } from '../data/mockData';
+import { useVersionManagerSnapshot } from '../data/useVersionManager';
+import { versionManager } from '../data/versionManager';
 import type { FileNode, Resource } from '../types';
+
+function nextPatchVersion(version: string) {
+  const parts = version.split('.').map((part) => Number.parseInt(part, 10));
+  if (parts.some((part) => Number.isNaN(part))) {
+    return `${version}.1`;
+  }
+  const [major = 1, minor = 0, patch = 0] = parts;
+  return `${major}.${minor}.${patch + 1}`;
+}
 
 function fallbackFileTree(resource: Resource): FileNode[] {
   if (resource.type === 'plugin') {
@@ -65,6 +76,7 @@ function collectFiles(tree: FileNode[]): FileNode[] {
 }
 
 export function ResourceDetail() {
+  useVersionManagerSnapshot();
   const { id, identifier } = useParams();
   const isNamespaceScope = Boolean(identifier);
   const namespace = identifier
@@ -103,6 +115,8 @@ export function ResourceDetail() {
   };
   const fileTree = resource.fileTree && resource.fileTree.length > 0 ? resource.fileTree : fallbackFileTree(resource);
   const files = useMemo(() => collectFiles(fileTree), [fileTree]);
+  const versionHistory = resource ? versionManager.listResourceVersions(resource.id) : [];
+  const activeVersion = resource ? versionManager.getActiveResourceVersion(resource.id) : null;
   const downloadResource = () => {};
   const downloadFile = (_file: FileNode) => {};
 
@@ -231,6 +245,58 @@ export function ResourceDetail() {
                 </Badge>
               ))}
             </div>
+          </CardContent>
+        </Card>
+
+        <Card className="bg-slate-900 border-slate-800">
+          <CardHeader className="flex flex-row items-center justify-between">
+            <CardTitle>Version Management</CardTitle>
+            <Button
+              size="sm"
+              variant="outline"
+              className="border-slate-700"
+              onClick={() =>
+                versionManager.createResourceVersion({
+                  resourceId: resource.id,
+                  version: nextPatchVersion(activeVersion?.version ?? resource.version),
+                  size: resource.size,
+                  changelog: 'Automated draft created from current active version',
+                  labelsSnapshot: resource.labels,
+                  fileTree: resource.fileTree,
+                  author: 'operator',
+                  status: 'draft',
+                })
+              }
+            >
+              Create Draft
+            </Button>
+          </CardHeader>
+          <CardContent className="space-y-2">
+            {versionHistory.map((version) => (
+              <div key={version.id} className="rounded border border-slate-800 bg-slate-800/40 px-3 py-2">
+                <div className="flex items-center justify-between gap-2">
+                  <div>
+                    <p className="text-sm font-medium">v{version.version}</p>
+                    <p className="text-xs text-slate-400">{version.changelog}</p>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <Badge className={version.status === 'active' ? 'bg-emerald-900/40 text-emerald-300' : 'bg-slate-800 text-slate-300'}>
+                      {version.status}
+                    </Badge>
+                    {version.status !== 'active' && (
+                      <Button size="sm" variant="outline" className="h-7 border-slate-700" onClick={() => versionManager.activateResourceVersion(resource.id, version.id)}>
+                        Promote
+                      </Button>
+                    )}
+                    {version.status === 'draft' && (
+                      <Button size="sm" variant="ghost" className="h-7 text-slate-300" onClick={() => versionManager.setResourceVersionStatus(resource.id, version.id, 'deprecated')}>
+                        Deprecate
+                      </Button>
+                    )}
+                  </div>
+                </div>
+              </div>
+            ))}
           </CardContent>
         </Card>
       </div>

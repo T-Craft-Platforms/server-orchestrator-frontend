@@ -6,6 +6,8 @@ import { Button } from '../../components/ui/button';
 import { Input } from '../../components/ui/input';
 import { Badge } from '../../components/ui/badge';
 import { mockResources, mockNamespaces } from '../../data/mockData';
+import { useVersionManagerSnapshot } from '../../data/useVersionManager';
+import { versionManager } from '../../data/versionManager';
 import { useNamespace } from '../../context/NamespaceContext';
 import {
   Select,
@@ -18,6 +20,7 @@ import { ResourceUploadDialog } from '../../components/ResourceUploadDialog';
 import type { Resource } from '../../types';
 
 export function NamespaceResources() {
+  useVersionManagerSnapshot();
   const [resources, setResources] = useState<Resource[]>([...mockResources]);
   const [searchQuery, setSearchQuery] = useState('');
   const [typeFilter, setTypeFilter] = useState<string>('all');
@@ -95,7 +98,11 @@ export function NamespaceResources() {
 
         {/* Grid View */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {filteredResources.map((resource) => (
+          {filteredResources.map((resource) => {
+            const activeVersion = versionManager.getActiveResourceVersion(resource.id);
+            const displayVersion = activeVersion?.version ?? resource.version;
+            const displaySize = activeVersion?.size ?? resource.size;
+            return (
             <Card key={resource.id} className="bg-slate-900 border-slate-800 hover:border-slate-700 transition-colors">
               <CardContent className="p-4">
                 <div className="flex items-start gap-3 mb-3">
@@ -106,7 +113,7 @@ export function NamespaceResources() {
                     <Link to={`./${resource.id}`} className="font-semibold truncate block hover:text-blue-400">
                       {resource.name}
                     </Link>
-                    <p className="text-xs text-slate-400">v{resource.version}</p>
+                    <p className="text-xs text-slate-400">v{displayVersion}</p>
                   </div>
                   <Badge 
                     variant="secondary" 
@@ -121,7 +128,7 @@ export function NamespaceResources() {
                 </p>
 
                 <div className="flex items-center justify-between mb-3 text-xs text-slate-500">
-                  <span>{resource.size}</span>
+                  <span>{displaySize}</span>
                   <span>Used by {resource.usedBy} servers</span>
                 </div>
 
@@ -143,7 +150,7 @@ export function NamespaceResources() {
                 </div>
               </CardContent>
             </Card>
-          ))}
+          )})}
         </div>
 
         {filteredResources.length === 0 && (

@@ -29,6 +29,8 @@ import { Textarea } from '../components/ui/textarea';
 import { mockNamespaces, mockServers, mockTemplates } from '../data/mockData';
 import { TemplatePlaceholder, TemplatePlaceholderType } from '../types';
 import { DeployServerDialog } from '../components/DeployServerDialog';
+import { useVersionManagerSnapshot } from '../data/useVersionManager';
+import { versionManager } from '../data/versionManager';
 import {
   getTemplateBlueprintFiles,
   getTemplatePlaceholders,
@@ -42,7 +44,17 @@ function normalizeKey(raw: string) {
   return raw.toUpperCase().replace(/[^A-Z0-9_]/g, '_').replace(/_+/g, '_').replace(/^_+|_+$/g, '');
 }
 
+function nextPatchVersion(version: string) {
+  const parts = version.split('.').map((part) => Number.parseInt(part, 10));
+  if (parts.some((part) => Number.isNaN(part))) {
+    return `${version}.1`;
+  }
+  const [major = 1, minor = 0, patch = 0] = parts;
+  return `${major}.${minor}.${patch + 1}`;
+}
+
 export function TemplateDetail() {
+  useVersionManagerSnapshot();
   const { id, identifier } = useParams();
   const template = mockTemplates.find((candidate) => candidate.id === id);
   const namespace = identifier ? mockNamespaces.find((candidate) => candidate.id === identifier) : null;
@@ -66,6 +78,8 @@ export function TemplateDetail() {
   const scopedDeployments = isNamespaceScope ? deployments.filter((s) => s.namespaceId === identifier) : deployments;
   const avgCpu = scopedDeployments.length ? Math.round(scopedDeployments.reduce((sum, s) => sum + s.cpu, 0) / scopedDeployments.length) : 0;
   const avgMemory = scopedDeployments.length ? Math.round(scopedDeployments.reduce((sum, s) => sum + s.memory, 0) / scopedDeployments.length) : 0;
+  const templateVersions = versionManager.listTemplateVersions(template.id);
+  const activeTemplateVersion = versionManager.getActiveTemplateVersion(template.id);
 
   const [placeholders, setPlaceholders] = useState<TemplatePlaceholder[]>(() => getTemplatePlaceholders(template));
   const [files, setFiles] = useState(() => getTemplateBlueprintFiles(template));
@@ -177,6 +191,7 @@ export function TemplateDetail() {
         <Tabs defaultValue="overview" className="space-y-4">
           <TabsList className="bg-slate-900 border border-slate-800">
             <TabsTrigger value="overview">Overview</TabsTrigger>
+            <TabsTrigger value="versions">Versions</TabsTrigger>
             <TabsTrigger value="placeholders">Placeholders</TabsTrigger>
             <TabsTrigger value="files">Blueprint Files</TabsTrigger>
             <TabsTrigger value="deployments">Deployments</TabsTrigger>
@@ -193,6 +208,66 @@ export function TemplateDetail() {
                 <div className="p-3 rounded-lg bg-slate-800/50 border border-slate-700 text-sm text-slate-300">
                   Use placeholders to parameterize blueprint files per server instance without cloning templates.
                 </div>
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          <TabsContent value="versions" className="space-y-4">
+            <Card className="bg-slate-900 border-slate-800">
+              <CardHeader className="flex flex-row items-center justify-between">
+                <CardTitle>Template Version History</CardTitle>
+                <Button
+                  size="sm"
+                  variant="outline"
+                  className="border-slate-700"
+                  onClick={() =>
+                    versionManager.createTemplateVersion({
+                      templateId: template.id,
+                      version: nextPatchVersion(activeTemplateVersion?.version ?? '1.0.0'),
+                      changelog: 'Draft created from active template configuration',
+                      minecraftVersion: template.minecraftVersion,
+                      javaVersion: template.javaVersion,
+                      defaultMemory: template.defaultMemory,
+                      defaultCpu: template.defaultCpu,
+                      restrictionsSnapshot: template.restrictions,
+                      placeholdersSnapshot: placeholders,
+                      author: 'operator',
+                      status: 'draft',
+                    })
+                  }
+                >
+                  Create Draft
+                </Button>
+              </CardHeader>
+              <CardContent className="space-y-2">
+                {templateVersions.map((version) => (
+                  <div key={version.id} className="rounded border border-slate-800 bg-slate-800/40 px-3 py-2">
+                    <div className="flex items-start justify-between gap-2">
+                      <div>
+                        <p className="text-sm font-medium">v{version.version}</p>
+                        <p className="text-xs text-slate-400">{version.changelog}</p>
+                        <p className="text-xs text-slate-500 mt-1">
+                          MC {version.minecraftVersion} | Java {version.javaVersion} | {version.defaultCpu} / {version.defaultMemory}
+                        </p>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <Badge className={version.status === 'active' ? 'bg-emerald-900/40 text-emerald-300' : 'bg-slate-800 text-slate-300'}>
+                          {version.status}
+                        </Badge>
+                        {version.status !== 'active' && (
+                          <Button size="sm" variant="outline" className="h-7 border-slate-700" onClick={() => versionManager.activateTemplateVersion(template.id, version.id)}>
+                            Promote
+                          </Button>
+                        )}
+                        {version.status === 'draft' && (
+                          <Button size="sm" variant="ghost" className="h-7 text-slate-300" onClick={() => versionManager.setTemplateVersionStatus(template.id, version.id, 'deprecated')}>
+                            Deprecate
+                          </Button>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                ))}
               </CardContent>
             </Card>
           </TabsContent>

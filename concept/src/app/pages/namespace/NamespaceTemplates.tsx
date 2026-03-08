@@ -10,8 +10,10 @@ import { mockTemplates } from '../../data/mockData';
 import { useNamespace } from '../../context/NamespaceContext';
 import { mockNamespaces } from '../../data/mockData';
 import { DeployServerDialog } from '../../components/DeployServerDialog';
+import { useVersionManagerSnapshot } from '../../data/useVersionManager';
 
 export function NamespaceTemplates() {
+  useVersionManagerSnapshot();
   const [searchQuery, setSearchQuery] = useState('');
   const { selectedNamespace } = useNamespace();
   const namespace = mockNamespaces.find(ns => ns.id === selectedNamespace);

@@ -8,6 +8,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '.
 import { Textarea } from './ui/textarea';
 import { Badge } from './ui/badge';
 import { mockNamespaces } from '../data/mockData';
+import { versionManager } from '../data/versionManager';
 import type { FileNode, Resource } from '../types';
 
 interface ResourceUploadDialogProps {
@@ -153,6 +154,7 @@ export function ResourceUploadDialog({
       fileTree,
     };
 
+    versionManager.registerResource(nextResource, 'operator');
     onCreate(nextResource);
     setOpen(false);
     clearForm();
