@@ -1,9 +1,8 @@
-import { createBrowserRouter, Navigate } from "react-router";
+import { createBrowserRouter, Navigate, useParams } from "react-router";
 import { RootLayout } from "./layouts/RootLayout";
 import { GlobalDashboard } from "./pages/global/GlobalDashboard";
 import { NamespaceDashboard } from "./pages/namespace/NamespaceDashboard";
 import { Namespaces } from "./pages/global/Namespaces";
-import { NamespaceDetail } from "./pages/NamespaceDetail";
 import { Servers } from "./pages/namespace/Servers";
 import { ServerDetail } from "./pages/namespace/ServerDetail";
 import { GlobalTemplates } from "./pages/global/GlobalTemplates";
@@ -18,6 +17,14 @@ import { TemplateDetail } from "./pages/TemplateDetail";
 import { ResourceDetail } from "./pages/ResourceDetail";
 import { NamespaceSettings } from "./pages/namespace/NamespaceSettings";
 
+function ProjectRouteRedirect() {
+  const { id } = useParams();
+  if (!id) {
+    return <Navigate to="/global/projects" replace />;
+  }
+  return <Navigate to={`/namespace/${id}/dashboard`} replace />;
+}
+
 export const router = createBrowserRouter([
   {
     path: "/",
@@ -28,9 +35,9 @@ export const router = createBrowserRouter([
       // Global Routes
       { path: "global/dashboard", Component: GlobalDashboard },
       { path: "global/projects", Component: Namespaces },
-      { path: "global/projects/:id", Component: NamespaceDetail },
+      { path: "global/projects/:id", Component: ProjectRouteRedirect },
       { path: "global/namespaces", Component: Namespaces },
-      { path: "global/namespaces/:id", Component: NamespaceDetail },
+      { path: "global/namespaces/:id", Component: ProjectRouteRedirect },
       { path: "global/templates", Component: GlobalTemplates },
       { path: "global/templates/:id", Component: TemplateDetail },
       { path: "global/resources", Component: GlobalResources },

@@ -158,7 +158,7 @@ export function GlobalDashboard() {
                 {mockNamespaces.map((ns) => (
                   <Link
                     key={ns.id}
-                    to={`/global/projects/${ns.id}`}
+                    to={`/namespace/${ns.id}/dashboard`}
                     className="block p-3 rounded-lg bg-slate-800/50 hover:bg-slate-800 transition-colors"
                   >
                     <div className="flex items-start justify-between mb-2">

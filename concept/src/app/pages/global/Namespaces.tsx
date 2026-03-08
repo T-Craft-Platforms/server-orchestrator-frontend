@@ -96,7 +96,7 @@ export function Namespaces() {
         {/* Projects Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {filteredNamespaces.map((namespace) => (
-            <Link key={namespace.id} to={`/global/projects/${namespace.id}`}>
+            <Link key={namespace.id} to={`/namespace/${namespace.id}/dashboard`}>
               <Card className="bg-slate-900 border-slate-800 hover:border-slate-700 transition-colors h-full">
                 <CardContent className="p-6">
                   <div className="flex items-start justify-between mb-4">

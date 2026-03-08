@@ -9,18 +9,15 @@ import {
   X,
   Settings,
   Globe,
-  ChevronDown,
-  Users
+  Users,
+  Search
 } from 'lucide-react';
 import { Button } from '../components/ui/button';
 import { useEffect, useMemo, useState } from 'react';
 import { useNamespace } from '../context/NamespaceContext';
 import { mockNamespaces } from '../data/mockData';
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from '../components/ui/popover';
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '../components/ui/dialog';
+import { Input } from '../components/ui/input';
 
 const globalNavigation = [
   { name: 'Dashboard', href: '/global/dashboard', icon: LayoutDashboard },
@@ -35,7 +32,8 @@ export function RootLayout() {
   const location = useLocation();
   const navigate = useNavigate();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [contextPopoverOpen, setContextPopoverOpen] = useState(false);
+  const [isNamespaceTreeOpen, setIsNamespaceTreeOpen] = useState(false);
+  const [namespaceSearch, setNamespaceSearch] = useState('');
   const { selectedNamespace, setSelectedNamespace } = useNamespace();
   const scopePathMatch = location.pathname.match(/^\/(namespace|project)\/([^/]+)(?:\/|$)/);
   const scopePrefix = (scopePathMatch?.[1] as 'namespace' | 'project' | undefined) ?? 'namespace';
@@ -59,7 +57,39 @@ export function RootLayout() {
       { name: 'Settings', href: `${namespaceBase}/settings`, icon: Settings },
     ];
   }, [activeNamespaceId, isGlobalRoute, scopePrefix]);
-  const selectedNs = mockNamespaces.find(ns => ns.id === activeNamespaceId);
+  const namespacePreviewLimit = 2;
+  const visibleNamespaces = useMemo(() => {
+    const preview = mockNamespaces.slice(0, namespacePreviewLimit);
+    if (!activeNamespaceId || isGlobalRoute) {
+      return preview;
+    }
+
+    if (preview.some((ns) => ns.id === activeNamespaceId)) {
+      return preview;
+    }
+
+    const activeNamespace = mockNamespaces.find((ns) => ns.id === activeNamespaceId);
+    if (!activeNamespace) {
+      return preview;
+    }
+
+    if (namespacePreviewLimit <= 1) {
+      return [activeNamespace];
+    }
+
+    return [...preview.slice(0, namespacePreviewLimit - 1), activeNamespace];
+  }, [activeNamespaceId, isGlobalRoute]);
+  const hasHiddenNamespaces = mockNamespaces.some((ns) => !visibleNamespaces.some((visible) => visible.id === ns.id));
+  const normalizedNamespaceSearch = namespaceSearch.trim().toLowerCase();
+  const filteredNamespaces = useMemo(() => {
+    if (!normalizedNamespaceSearch) {
+      return mockNamespaces;
+    }
+    return mockNamespaces.filter((ns) => {
+      const searchable = [ns.id, ns.name, ns.description, ...ns.labels].join(' ').toLowerCase();
+      return searchable.includes(normalizedNamespaceSearch);
+    });
+  }, [normalizedNamespaceSearch]);
 
   const isActive = (href: string) => {
     if (href === '/global/dashboard' && location.pathname === '/') {
@@ -99,14 +129,12 @@ export function RootLayout() {
   }, [fallbackNamespaceId, navigate, routeNamespaceId, scopePrefix, selectedNamespace, setSelectedNamespace]);
 
   const switchToGlobal = () => {
-    setContextPopoverOpen(false);
     setMobileMenuOpen(false);
     navigate('/global/dashboard');
   };
 
   const switchToNamespace = (namespaceId: string) => {
     setSelectedNamespace(namespaceId);
-    setContextPopoverOpen(false);
     setMobileMenuOpen(false);
     navigate(`/${scopePrefix}/${namespaceId}/dashboard`);
   };
@@ -148,73 +176,54 @@ export function RootLayout() {
             </div>
           </div>
 
-          {/* Context Selector */}
-          <div className="p-4 border-b border-slate-800">
-            <Popover open={contextPopoverOpen} onOpenChange={setContextPopoverOpen}>
-              <PopoverTrigger className="inline-flex h-9 w-full items-center justify-between gap-2 rounded-md border border-slate-700 bg-transparent px-4 py-2 text-sm font-medium text-foreground transition-colors hover:bg-slate-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-500 disabled:pointer-events-none disabled:opacity-50">
-                  <div className="flex items-center gap-2">
-                    {isGlobalRoute ? (
-                      <>
-                        <Globe className="w-4 h-4 text-blue-400" />
-                        <span className="text-sm">Global</span>
-                      </>
-                    ) : (
-                      <>
-                        <Layers className="w-4 h-4 text-purple-400" />
-                        <span className="text-sm truncate">{selectedNs?.name || 'Select Project'}</span>
-                      </>
-                    )}
-                  </div>
-                  <ChevronDown className="w-4 h-4 text-slate-400" />
-              </PopoverTrigger>
-              <PopoverContent
-                align="start"
-                className="w-72 bg-slate-900 border-slate-800 p-2"
-              >
-                <div className="text-xs font-semibold text-slate-400 uppercase tracking-wider px-2 py-1">
-                  Switch Context
-                </div>
-                <div className="mt-1 space-y-1">
-                  <button
-                    type="button"
-                    onClick={switchToGlobal}
-                    className={`w-full flex items-center gap-2 rounded-md px-2 py-1.5 text-left text-sm transition-colors ${
-                      isGlobalRoute ? 'bg-slate-800 text-white' : 'text-slate-200 hover:bg-slate-800'
-                    }`}
-                  >
-                    <Globe className="w-4 h-4 text-blue-400" />
-                    <span>Global</span>
-                  </button>
-                  <div className="ml-2 border-l border-slate-700/80 pl-4">
-                    {mockNamespaces.map((ns) => {
-                      const isSelected = selectedNamespace === ns.id && !isGlobalRoute;
-                      return (
-                        <button
-                          key={ns.id}
-                          type="button"
-                          onClick={() => switchToNamespace(ns.id)}
-                          className={`group relative mt-1 w-full rounded-md px-2 py-1.5 text-left text-sm transition-colors ${
-                            isSelected
-                              ? 'bg-slate-800 text-white ring-1 ring-slate-700'
-                              : 'text-slate-300 hover:bg-slate-800/90'
-                          }`}
-                        >
-                          <span className="pointer-events-none absolute -left-4 top-1/2 h-px w-3 -translate-y-1/2 bg-slate-700/80" />
-                          <span className="flex items-center gap-2">
-                            <Layers className="w-4 h-4 text-purple-400" />
-                            <span className="truncate">{ns.name}</span>
-                          </span>
-                        </button>
-                      );
-                    })}
-                  </div>
-                </div>
-              </PopoverContent>
-            </Popover>
-          </div>
-
           {/* Navigation */}
           <nav className="flex-1 p-4 space-y-1 overflow-y-auto">
+            <div className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2 px-3">
+              Namespace Tree
+            </div>
+            <button
+              type="button"
+              onClick={switchToGlobal}
+              className={`w-full flex items-center gap-2 rounded-md px-3 py-2 text-left text-sm transition-colors ${
+                isGlobalRoute ? 'bg-slate-800 text-white ring-1 ring-slate-700' : 'text-slate-200 hover:bg-slate-800'
+              }`}
+            >
+              <Globe className="w-4 h-4 text-blue-400" />
+              <span>Global</span>
+            </button>
+            <div className="ml-3 mt-1 border-l border-slate-700/80 pl-3 space-y-1 mb-3">
+              {visibleNamespaces.map((ns) => {
+                const isSelected = activeNamespaceId === ns.id && !isGlobalRoute;
+                return (
+                  <button
+                    key={ns.id}
+                    type="button"
+                    onClick={() => switchToNamespace(ns.id)}
+                    className={`group relative w-full rounded-md px-2 py-1.5 text-left text-sm transition-colors ${
+                      isSelected
+                        ? 'bg-slate-800 text-white ring-1 ring-slate-700'
+                        : 'text-slate-300 hover:bg-slate-800/90'
+                    }`}
+                  >
+                    <span className="flex items-center gap-2">
+                      <Layers className="w-4 h-4 text-purple-400" />
+                      <span className="truncate">{ns.name}</span>
+                    </span>
+                  </button>
+                );
+              })}
+              {hasHiddenNamespaces && (
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="sm"
+                  className="mt-1 h-auto w-full justify-start px-2 py-1 text-slate-400 hover:bg-transparent hover:text-slate-200"
+                  onClick={() => setIsNamespaceTreeOpen(true)}
+                >
+                  Show all ({mockNamespaces.length})
+                </Button>
+              )}
+            </div>
             <div className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2 px-3">
               {isGlobalRoute ? 'Global Management' : 'Project Scope'}
             </div>
@@ -239,6 +248,65 @@ export function RootLayout() {
               );
             })}
           </nav>
+          <Dialog open={isNamespaceTreeOpen} onOpenChange={setIsNamespaceTreeOpen}>
+            <DialogContent className="max-w-2xl bg-slate-900 border-slate-800 text-white">
+              <DialogHeader>
+                <DialogTitle>All Namespaces</DialogTitle>
+              </DialogHeader>
+              <div className="space-y-4">
+                <div className="relative">
+                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
+                  <Input
+                    value={namespaceSearch}
+                    onChange={(event) => setNamespaceSearch(event.target.value)}
+                    placeholder="Search namespaces by name, id, description, or label..."
+                    className="pl-10 bg-slate-950 border-slate-700"
+                  />
+                </div>
+                <div className="max-h-[420px] overflow-y-auto rounded-md border border-slate-800 bg-slate-950/40 p-3">
+                  <button
+                    type="button"
+                    onClick={switchToGlobal}
+                    className={`w-full flex items-center gap-2 rounded-md px-3 py-2 text-left text-sm transition-colors ${
+                      isGlobalRoute ? 'bg-slate-800 text-white ring-1 ring-slate-700' : 'text-slate-200 hover:bg-slate-800'
+                    }`}
+                  >
+                    <Globe className="w-4 h-4 text-blue-400" />
+                    <span>Global</span>
+                  </button>
+                  <div className="ml-3 mt-2 border-l border-slate-700/80 pl-3 space-y-1">
+                    {filteredNamespaces.map((ns) => {
+                      const isSelected = activeNamespaceId === ns.id && !isGlobalRoute;
+                      return (
+                        <button
+                          key={ns.id}
+                          type="button"
+                          onClick={() => {
+                            switchToNamespace(ns.id);
+                            setIsNamespaceTreeOpen(false);
+                          }}
+                          className={`w-full rounded-md px-2 py-1.5 text-left text-sm transition-colors ${
+                            isSelected
+                              ? 'bg-slate-800 text-white ring-1 ring-slate-700'
+                              : 'text-slate-300 hover:bg-slate-800/90'
+                          }`}
+                        >
+                          <span className="flex items-center gap-2">
+                            <Layers className="w-4 h-4 text-purple-400" />
+                            <span className="truncate">{ns.name}</span>
+                          </span>
+                          <span className="block text-xs text-slate-500 mt-0.5 truncate">{ns.id}</span>
+                        </button>
+                      );
+                    })}
+                    {filteredNamespaces.length === 0 && (
+                      <p className="px-2 py-3 text-sm text-slate-400">No namespaces match your search.</p>
+                    )}
+                  </div>
+                </div>
+              </div>
+            </DialogContent>
+          </Dialog>
 
           {/* Footer info */}
           <div className="p-4 border-t border-slate-800">
