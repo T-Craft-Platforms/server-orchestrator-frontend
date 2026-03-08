@@ -50,7 +50,7 @@ export function Resources() {
         <div className="flex items-center justify-between mb-8">
           <div>
             <h1 className="text-3xl font-bold mb-2">Resources</h1>
-            <p className="text-slate-400">Shared assets organized in namespace buckets</p>
+            <p className="text-slate-400">Shared assets organized in project buckets</p>
           </div>
           <Button className="bg-blue-600 hover:bg-blue-700">
             <Plus className="w-4 h-4 mr-2" />

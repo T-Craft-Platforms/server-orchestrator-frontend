@@ -127,7 +127,7 @@ export function ResourceUploadDialog({
       return;
     }
     if (!namespaceId) {
-      setError('Namespace is required.');
+      setError('Project is required.');
       return;
     }
     if (selectedFiles.length === 0) {
@@ -224,7 +224,7 @@ export function ResourceUploadDialog({
               />
             </div>
             <div className="space-y-2">
-              <Label>Namespace</Label>
+              <Label>Project</Label>
               <Select
                 value={namespaceId}
                 onValueChange={setNamespaceId}

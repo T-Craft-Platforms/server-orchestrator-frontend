@@ -25,21 +25,21 @@ export function Namespaces() {
         {/* Header */}
         <div className="flex items-center justify-between mb-8">
           <div>
-            <h1 className="text-3xl font-bold mb-2">Namespaces</h1>
-            <p className="text-slate-400">Manage your server networks and tenant boundaries</p>
+            <h1 className="text-3xl font-bold mb-2">Projects</h1>
+            <p className="text-slate-400">Manage server groups and tenant boundaries</p>
           </div>
           <Dialog open={isCreateOpen} onOpenChange={setIsCreateOpen}>
             <DialogTrigger asChild>
               <Button className="bg-blue-600 hover:bg-blue-700">
                 <Plus className="w-4 h-4 mr-2" />
-                Create Namespace
+                Create Project
               </Button>
             </DialogTrigger>
             <DialogContent className="bg-slate-900 border-slate-800 text-white">
               <DialogHeader>
-                <DialogTitle>Create New Namespace</DialogTitle>
+                <DialogTitle>Create New Project</DialogTitle>
                 <DialogDescription className="text-slate-400">
-                  Create a new namespace to organize your servers and resources.
+                  Create a new project to organize your servers and resources.
                 </DialogDescription>
               </DialogHeader>
               <div className="space-y-4 py-4">
@@ -73,7 +73,7 @@ export function Namespaces() {
                   Cancel
                 </Button>
                 <Button className="bg-blue-600 hover:bg-blue-700">
-                  Create Namespace
+                  Create Project
                 </Button>
               </DialogFooter>
             </DialogContent>
@@ -85,7 +85,7 @@ export function Namespaces() {
           <div className="relative">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
             <Input
-              placeholder="Search namespaces..."
+              placeholder="Search projects..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               className="pl-10 bg-slate-900 border-slate-800"
@@ -93,10 +93,10 @@ export function Namespaces() {
           </div>
         </div>
 
-        {/* Namespaces Grid */}
+        {/* Projects Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {filteredNamespaces.map((namespace) => (
-            <Link key={namespace.id} to={`/global/namespaces/${namespace.id}`}>
+            <Link key={namespace.id} to={`/global/projects/${namespace.id}`}>
               <Card className="bg-slate-900 border-slate-800 hover:border-slate-700 transition-colors h-full">
                 <CardContent className="p-6">
                   <div className="flex items-start justify-between mb-4">
@@ -150,7 +150,7 @@ export function Namespaces() {
         {filteredNamespaces.length === 0 && (
           <div className="text-center py-12">
             <Layers className="w-12 h-12 text-slate-600 mx-auto mb-4" />
-            <h3 className="text-lg font-medium text-slate-400 mb-2">No namespaces found</h3>
+            <h3 className="text-lg font-medium text-slate-400 mb-2">No projects found</h3>
             <p className="text-sm text-slate-500">Try adjusting your search query</p>
           </div>
         )}

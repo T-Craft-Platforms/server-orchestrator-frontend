@@ -304,11 +304,11 @@ export function ServerDetail() {
                         <span className="font-mono text-xs">minecraft:paper-1.20.4</span>
                       </div>
                       <div className="flex justify-between">
-                        <span className="text-slate-400">Namespace</span>
+                        <span className="text-slate-400">Project</span>
                         <span className="font-mono text-xs">{server.namespaceName}</span>
                       </div>
                       <div className="flex justify-between">
-                        <span className="text-slate-400">Pod Status</span>
+                        <span className="text-slate-400">Container Status</span>
                         <Badge className="bg-green-600">Running</Badge>
                       </div>
                     </div>

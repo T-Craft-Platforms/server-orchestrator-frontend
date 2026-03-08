@@ -16,6 +16,7 @@ import { GlobalUserDetail } from "./pages/global/GlobalUserDetail";
 import { NamespaceUsers } from "./pages/namespace/NamespaceUsers";
 import { TemplateDetail } from "./pages/TemplateDetail";
 import { ResourceDetail } from "./pages/ResourceDetail";
+import { NamespaceSettings } from "./pages/namespace/NamespaceSettings";
 
 export const router = createBrowserRouter([
   {
@@ -26,6 +27,8 @@ export const router = createBrowserRouter([
       
       // Global Routes
       { path: "global/dashboard", Component: GlobalDashboard },
+      { path: "global/projects", Component: Namespaces },
+      { path: "global/projects/:id", Component: NamespaceDetail },
       { path: "global/namespaces", Component: Namespaces },
       { path: "global/namespaces/:id", Component: NamespaceDetail },
       { path: "global/templates", Component: GlobalTemplates },
@@ -45,6 +48,21 @@ export const router = createBrowserRouter([
       { path: "namespace/:identifier/resources", Component: NamespaceResources },
       { path: "namespace/:identifier/resources/:id", Component: ResourceDetail },
       { path: "namespace/:identifier/users", Component: NamespaceUsers },
+      { path: "namespace/:identifier/settings", Component: NamespaceSettings },
+
+      // Project Aliases
+      { path: "project/:identifier/dashboard", Component: NamespaceDashboard },
+      { path: "project/:identifier/servers", Component: Servers },
+      { path: "project/:identifier/servers/:id", Component: ServerDetail },
+      { path: "project/:identifier/templates", Component: NamespaceTemplates },
+      { path: "project/:identifier/templates/:id", Component: TemplateDetail },
+      { path: "project/:identifier/resources", Component: NamespaceResources },
+      { path: "project/:identifier/resources/:id", Component: ResourceDetail },
+      { path: "project/:identifier/users", Component: NamespaceUsers },
+      { path: "project/:identifier/settings", Component: NamespaceSettings },
+
+      // Fallback
+      { path: "*", element: <Navigate to="/global/dashboard" replace /> },
     ],
   },
 ]);

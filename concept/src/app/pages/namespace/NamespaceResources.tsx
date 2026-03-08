@@ -59,7 +59,7 @@ export function NamespaceResources() {
               <Layers className="w-6 h-6 text-purple-500" />
               <h1 className="text-3xl font-bold">Resources</h1>
             </div>
-            <p className="text-slate-400">Resources in {namespace.name}</p>
+            <p className="text-slate-400">Resources in project {namespace.name}</p>
           </div>
           <ResourceUploadDialog
             fixedNamespaceId={selectedNamespace ?? undefined}

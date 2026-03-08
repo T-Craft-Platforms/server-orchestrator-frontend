@@ -44,7 +44,7 @@ export function Servers() {
               <Layers className="w-6 h-6 text-purple-500" />
               <h1 className="text-3xl font-bold">Servers</h1>
             </div>
-            <p className="text-slate-400">Servers in {namespace.name}</p>
+            <p className="text-slate-400">Servers in project {namespace.name}</p>
           </div>
           <DeployServerDialog
             fixedNamespaceId={selectedNamespace ?? undefined}

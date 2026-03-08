@@ -356,7 +356,7 @@ export const mockUsers: User[] = [
     username: 'ops_julia',
     displayName: 'Julia Ops',
     email: 'julia.ops@example.com',
-    role: 'Namespace Admin',
+    role: 'Project Admin',
     namespaces: ['ns-1'],
     status: 'active',
     lastLogin: '2026-03-02T21:15:00Z'
@@ -366,7 +366,7 @@ export const mockUsers: User[] = [
     username: 'dev_mark',
     displayName: 'Mark Dev',
     email: 'mark.dev@example.com',
-    role: 'Namespace Reader',
+    role: 'Project Reader',
     namespaces: ['ns-2', 'ns-3'],
     status: 'active',
     lastLogin: '2026-03-01T18:05:00Z'
@@ -386,7 +386,7 @@ export const mockUsers: User[] = [
     username: 'contractor_nina',
     displayName: 'Nina Contractor',
     email: 'nina.contractor@example.com',
-    role: 'Namespace Reader',
+    role: 'Project Reader',
     namespaces: ['ns-3'],
     status: 'invited',
     lastLogin: undefined
@@ -396,7 +396,7 @@ export const mockUsers: User[] = [
     username: 'legacy_bot',
     displayName: 'Legacy Bot',
     email: 'legacy.bot@example.com',
-    role: 'Namespace Admin',
+    role: 'Project Admin',
     namespaces: ['ns-1'],
     status: 'disabled',
     lastLogin: '2025-12-18T11:11:00Z'
@@ -420,17 +420,17 @@ export const mockRoles: Role[] = [
   },
   {
     id: 'role-namespace-admin',
-    name: 'Namespace Admin',
-    namespaceId: 'namespace',
-    description: 'Administrative access within a namespace.',
-    permissions: ['namespace:admin']
+    name: 'Project Admin',
+    namespaceId: 'project',
+    description: 'Administrative access within a project.',
+    permissions: ['project:admin']
   },
   {
     id: 'role-namespace-reader',
-    name: 'Namespace Reader',
-    namespaceId: 'namespace',
-    description: 'Read-only access within a namespace.',
-    permissions: ['namespace:read']
+    name: 'Project Reader',
+    namespaceId: 'project',
+    description: 'Read-only access within a project.',
+    permissions: ['project:read']
   }
 ];
 

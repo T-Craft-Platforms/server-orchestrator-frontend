@@ -24,7 +24,7 @@ import {
 
 const globalNavigation = [
   { name: 'Dashboard', href: '/global/dashboard', icon: LayoutDashboard },
-  { name: 'Namespaces', href: '/global/namespaces', icon: Layers },
+  { name: 'Projects', href: '/global/projects', icon: Layers },
   { name: 'Templates', href: '/global/templates', icon: FileCode },
   { name: 'Resources', href: '/global/resources', icon: FileBox },
   { name: 'Users', href: '/global/users', icon: Users },
@@ -37,8 +37,9 @@ export function RootLayout() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [contextPopoverOpen, setContextPopoverOpen] = useState(false);
   const { selectedNamespace, setSelectedNamespace } = useNamespace();
-  const namespacePathMatch = location.pathname.match(/^\/namespace\/([^/]+)(?:\/|$)/);
-  const routeNamespaceId = namespacePathMatch?.[1] ?? null;
+  const scopePathMatch = location.pathname.match(/^\/(namespace|project)\/([^/]+)(?:\/|$)/);
+  const scopePrefix = (scopePathMatch?.[1] as 'namespace' | 'project' | undefined) ?? 'namespace';
+  const routeNamespaceId = scopePathMatch?.[2] ?? null;
   const fallbackNamespaceId = mockNamespaces[0]?.id ?? null;
   const activeNamespaceId = routeNamespaceId ?? selectedNamespace ?? fallbackNamespaceId;
   
@@ -48,20 +49,24 @@ export function RootLayout() {
       return globalNavigation;
     }
 
-    const namespaceBase = `/namespace/${activeNamespaceId}`;
+    const namespaceBase = `/${scopePrefix}/${activeNamespaceId}`;
     return [
       { name: 'Dashboard', href: `${namespaceBase}/dashboard`, icon: LayoutDashboard },
       { name: 'Servers', href: `${namespaceBase}/servers`, icon: Server },
       { name: 'Templates', href: `${namespaceBase}/templates`, icon: FileCode },
       { name: 'Resources', href: `${namespaceBase}/resources`, icon: FileBox },
       { name: 'Users', href: `${namespaceBase}/users`, icon: Users },
+      { name: 'Settings', href: `${namespaceBase}/settings`, icon: Settings },
     ];
-  }, [activeNamespaceId, isGlobalRoute]);
+  }, [activeNamespaceId, isGlobalRoute, scopePrefix]);
   const selectedNs = mockNamespaces.find(ns => ns.id === activeNamespaceId);
 
   const isActive = (href: string) => {
     if (href === '/global/dashboard' && location.pathname === '/') {
       return true;
+    }
+    if (href === '/global/projects') {
+      return location.pathname.startsWith('/global/projects') || location.pathname.startsWith('/global/namespaces');
     }
     return location.pathname.startsWith(href);
   };
@@ -80,18 +85,18 @@ export function RootLayout() {
     }
 
     if (selectedNamespace) {
-      navigate(`/namespace/${selectedNamespace}/dashboard`, { replace: true });
+      navigate(`/${scopePrefix}/${selectedNamespace}/dashboard`, { replace: true });
       return;
     }
 
     if (fallbackNamespaceId) {
       setSelectedNamespace(fallbackNamespaceId);
-      navigate(`/namespace/${fallbackNamespaceId}/dashboard`, { replace: true });
+      navigate(`/${scopePrefix}/${fallbackNamespaceId}/dashboard`, { replace: true });
       return;
     }
 
     navigate('/global/dashboard', { replace: true });
-  }, [fallbackNamespaceId, navigate, routeNamespaceId, selectedNamespace, setSelectedNamespace]);
+  }, [fallbackNamespaceId, navigate, routeNamespaceId, scopePrefix, selectedNamespace, setSelectedNamespace]);
 
   const switchToGlobal = () => {
     setContextPopoverOpen(false);
@@ -103,7 +108,7 @@ export function RootLayout() {
     setSelectedNamespace(namespaceId);
     setContextPopoverOpen(false);
     setMobileMenuOpen(false);
-    navigate(`/namespace/${namespaceId}/dashboard`);
+    navigate(`/${scopePrefix}/${namespaceId}/dashboard`);
   };
 
   return (
@@ -138,7 +143,7 @@ export function RootLayout() {
               <Server className="w-8 h-8 text-blue-500" />
               <div>
                 <h1 className="font-semibold text-white">Server Orchestrator</h1>
-                <p className="text-xs text-slate-400">Kubernetes Management</p>
+                <p className="text-xs text-slate-400">Docker Fleet Management</p>
               </div>
             </div>
           </div>
@@ -156,7 +161,7 @@ export function RootLayout() {
                     ) : (
                       <>
                         <Layers className="w-4 h-4 text-purple-400" />
-                        <span className="text-sm truncate">{selectedNs?.name || 'Select Namespace'}</span>
+                        <span className="text-sm truncate">{selectedNs?.name || 'Select Project'}</span>
                       </>
                     )}
                   </div>
@@ -211,7 +216,7 @@ export function RootLayout() {
           {/* Navigation */}
           <nav className="flex-1 p-4 space-y-1 overflow-y-auto">
             <div className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2 px-3">
-              {isGlobalRoute ? 'Global Management' : 'Namespace Scope'}
+              {isGlobalRoute ? 'Global Management' : 'Project Scope'}
             </div>
             {navigation.map((item) => {
               const active = isActive(item.href);
@@ -239,12 +244,12 @@ export function RootLayout() {
           <div className="p-4 border-t border-slate-800">
             <div className="bg-slate-800 rounded-lg p-3">
               <div className="flex items-center justify-between mb-1">
-                <span className="text-xs text-slate-400">Cluster Status</span>
+                <span className="text-xs text-slate-400">Docker Fleet Status</span>
                 <span className="text-xs text-green-400">Healthy</span>
               </div>
               <div className="flex items-center justify-between text-xs text-slate-400">
-                <span>12 Nodes</span>
-                <span>v1.28.3</span>
+                <span>12 Docker Hosts</span>
+                <span>Engine v27.0.3</span>
               </div>
             </div>
           </div>

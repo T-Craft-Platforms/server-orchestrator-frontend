@@ -66,12 +66,12 @@ export function createDefaultTemplatePlaceholders(template: Template): TemplateP
       required: true,
     },
     {
-      id: `${template.id}-ph-namespace`,
-      key: 'NAMESPACE',
-      label: 'Namespace',
+      id: `${template.id}-ph-project`,
+      key: 'PROJECT_NAME',
+      label: 'Project',
       type: 'string',
-      description: 'Kubernetes namespace target.',
-      defaultValue: 'default',
+      description: 'Docker project/group target.',
+      defaultValue: 'production',
       required: true,
     },
     {
@@ -126,21 +126,27 @@ export function createDefaultTemplatePlaceholders(template: Template): TemplateP
 export function createDefaultTemplateFiles(template: Template): TemplateBlueprintFile[] {
   return [
     {
-      path: 'template.yaml',
-      description: 'Main deployment blueprint.',
-      content: `apiVersion: orchestrator/v1
-kind: ServerInstance
-metadata:
-  name: "{{SERVER_NAME}}"
-spec:
-  templateRef: "${template.id}"
-  namespace: "{{NAMESPACE}}"
-  environment: "{{ENVIRONMENT}}"
-  resources:
-    memory: "{{MEMORY_LIMIT}}"
-  config:
-    maxPlayers: "{{MAX_PLAYERS}}"
-    whitelist: "{{ENABLE_WHITELIST}}"`,
+      path: 'docker-compose.yml',
+      description: 'Main Docker deployment blueprint.',
+      content: `services:
+  {{SERVER_NAME}}:
+    image: minecraft/server:java21
+    container_name: "{{SERVER_NAME}}"
+    restart: unless-stopped
+    environment:
+      EULA: "TRUE"
+      TYPE: "PAPER"
+      VERSION: "${template.minecraftVersion}"
+      MAX_PLAYERS: "{{MAX_PLAYERS}}"
+      PROJECT_ENV: "{{ENVIRONMENT}}"
+      ENABLE_WHITELIST: "{{ENABLE_WHITELIST}}"
+    deploy:
+      resources:
+        limits:
+          memory: "{{MEMORY_LIMIT}}"
+    labels:
+      com.orchestrator.template: "${template.id}"
+      com.orchestrator.project: "{{PROJECT_NAME}}"`,
     },
     {
       path: 'server.properties',
@@ -157,7 +163,7 @@ white-list={{ENABLE_WHITELIST}}`,
       description: 'Container startup bootstrap script.',
       content: `#!/usr/bin/env sh
 set -eu
-echo "Starting {{SERVER_NAME}} in {{NAMESPACE}} ({{ENVIRONMENT}})"
+echo "Starting {{SERVER_NAME}} in project {{PROJECT_NAME}} ({{ENVIRONMENT}})"
 exec java -Xms2G -Xmx{{MEMORY_LIMIT}} -jar server.jar --nogui`,
     },
   ];
@@ -252,4 +258,3 @@ export function getTemplateTokenSegments(content: string, knownKeys: Set<string>
 
   return segments;
 }
-

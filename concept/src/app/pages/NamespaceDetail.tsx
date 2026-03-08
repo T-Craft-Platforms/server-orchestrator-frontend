@@ -17,9 +17,9 @@ export function NamespaceDetail() {
       <div className="min-h-screen bg-slate-950 text-white p-6 flex items-center justify-center">
         <div className="text-center">
           <Layers className="w-12 h-12 text-slate-600 mx-auto mb-4" />
-          <h2 className="text-xl font-semibold mb-2">Namespace not found</h2>
-          <Link to="/global/namespaces" className="text-blue-400 hover:text-blue-300">
-            Back to namespaces
+          <h2 className="text-xl font-semibold mb-2">Project not found</h2>
+          <Link to="/global/projects" className="text-blue-400 hover:text-blue-300">
+            Back to projects
           </Link>
         </div>
       </div>
@@ -35,9 +35,9 @@ export function NamespaceDetail() {
       {/* Header */}
       <div className="bg-slate-900 border-b border-slate-800 p-6">
         <div className="max-w-7xl mx-auto">
-          <Link to="/global/namespaces" className="inline-flex items-center gap-2 text-slate-400 hover:text-white mb-4">
+          <Link to="/global/projects" className="inline-flex items-center gap-2 text-slate-400 hover:text-white mb-4">
             <ArrowLeft className="w-4 h-4" />
-            Back to namespaces
+            Back to projects
           </Link>
           
           <div className="flex items-start justify-between">
@@ -241,17 +241,17 @@ export function NamespaceDetail() {
                         </Badge>
                       </div>
                       <p className="text-sm text-slate-400 mb-3">
-                        {role === 'Admin' && 'Administrative access in this namespace'}
-                        {role === 'Reader' && 'Read-only access in this namespace'}
+                        {role === 'Admin' && 'Administrative access in this project'}
+                        {role === 'Reader' && 'Read-only access in this project'}
                       </p>
                       <div className="flex gap-1 flex-wrap">
                         {role === 'Admin' && (
                           <>
-                            <Badge className="text-xs bg-green-900/30 text-green-300 border-0">namespace:admin</Badge>
+                            <Badge className="text-xs bg-green-900/30 text-green-300 border-0">project:admin</Badge>
                           </>
                         )}
                         {role === 'Reader' && (
-                          <Badge className="text-xs bg-slate-700 text-slate-300 border-0">namespace:read</Badge>
+                          <Badge className="text-xs bg-slate-700 text-slate-300 border-0">project:read</Badge>
                         )}
                       </div>
                     </div>
@@ -265,7 +265,7 @@ export function NamespaceDetail() {
           <TabsContent value="settings">
             <Card className="bg-slate-900 border-slate-800">
               <CardHeader>
-                <CardTitle>Namespace Settings</CardTitle>
+                <CardTitle>Project Settings</CardTitle>
               </CardHeader>
               <CardContent className="space-y-6">
                 <div>
@@ -317,9 +317,9 @@ export function NamespaceDetail() {
                   <div className="border border-red-900/50 rounded-lg p-4 bg-red-950/20">
                     <div className="flex items-center justify-between">
                       <div>
-                        <h4 className="font-medium text-red-400">Delete Namespace</h4>
+                        <h4 className="font-medium text-red-400">Delete Project</h4>
                         <p className="text-sm text-slate-400 mt-1">
-                          This will permanently delete the namespace and all associated servers and resources
+                          This will permanently delete the project and all associated servers and resources
                         </p>
                       </div>
                       <Button variant="destructive">Delete</Button>

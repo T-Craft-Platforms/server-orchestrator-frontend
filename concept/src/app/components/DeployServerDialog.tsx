@@ -78,7 +78,7 @@ export function DeployServerDialog({
       return;
     }
     if (!namespace) {
-      setError('Namespace is required.');
+      setError('Project is required.');
       return;
     }
     if (!serverName) {
@@ -162,10 +162,10 @@ export function DeployServerDialog({
 
           {!fixedNamespaceId && (
             <div className="space-y-2">
-              <Label>Namespace</Label>
+              <Label>Project</Label>
               <Select value={namespaceId} onValueChange={setNamespaceId}>
                 <SelectTrigger className="bg-slate-800 border-slate-700">
-                  <SelectValue placeholder="Select namespace" />
+                  <SelectValue placeholder="Select project" />
                 </SelectTrigger>
                 <SelectContent className="bg-slate-900 border-slate-800">
                   {mockNamespaces.map((namespace) => (

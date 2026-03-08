@@ -116,7 +116,7 @@ export function GlobalUsers() {
         : newGlobalRole === 'role-global-reader'
         ? 'Global Reader'
         : newNamespaces.length > 0
-        ? 'Namespace Reader'
+        ? 'Project Reader'
         : 'Unassigned';
 
     const newUser: User = {
@@ -182,7 +182,7 @@ export function GlobalUsers() {
               <Users className="w-8 h-8 text-blue-500" />
               <h1 className="text-3xl font-bold">User Management</h1>
             </div>
-            <p className="text-slate-400">Global and namespace role assignments</p>
+            <p className="text-slate-400">Global and project role assignments</p>
           </div>
           <div className="flex gap-2">
             <Dialog
@@ -270,13 +270,13 @@ export function GlobalUsers() {
                     </div>
                   </div>
                   <div className="space-y-2">
-                    <Label>Initial Namespaces</Label>
+                    <Label>Initial Projects</Label>
                     <div className="relative">
                       <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
                       <Input
                         value={namespaceSearch}
                         onChange={(e) => setNamespaceSearch(e.target.value)}
-                        placeholder="Search namespaces..."
+                        placeholder="Search projects..."
                         className="pl-10 bg-slate-800 border-slate-700"
                       />
                     </div>
@@ -291,7 +291,7 @@ export function GlobalUsers() {
                         </label>
                       ))}
                       {filteredInitialNamespaces.length === 0 && (
-                        <p className="text-sm text-slate-500">No namespaces found.</p>
+                        <p className="text-sm text-slate-500">No projects found.</p>
                       )}
                     </div>
                   </div>
@@ -341,10 +341,10 @@ export function GlobalUsers() {
               </div>
               <Select value={namespaceFilter} onValueChange={setNamespaceFilter}>
                 <SelectTrigger className="bg-slate-800 border-slate-700">
-                  <SelectValue placeholder="Filter by namespace" />
+                  <SelectValue placeholder="Filter by project" />
                 </SelectTrigger>
                 <SelectContent className="bg-slate-900 border-slate-800">
-                  <SelectItem value="all">All namespaces</SelectItem>
+                  <SelectItem value="all">All projects</SelectItem>
                   {mockNamespaces.map((ns) => (
                     <SelectItem key={ns.id} value={ns.id}>
                       {ns.name}
@@ -365,7 +365,7 @@ export function GlobalUsers() {
                   <TableHead className="text-slate-400">Email</TableHead>
                   <TableHead className="text-slate-400">Status</TableHead>
                   <TableHead className="text-slate-400">Global Role</TableHead>
-                  <TableHead className="text-slate-400">Namespaces</TableHead>
+                  <TableHead className="text-slate-400">Projects</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>

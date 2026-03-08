@@ -50,12 +50,12 @@ export function Dashboard() {
 
           <Card className="bg-slate-900 border-slate-800">
             <CardHeader className="flex flex-row items-center justify-between pb-2">
-              <CardTitle className="text-sm font-medium text-slate-400">Namespaces</CardTitle>
+              <CardTitle className="text-sm font-medium text-slate-400">Projects</CardTitle>
               <Layers className="w-4 h-4 text-purple-500" />
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold">{mockNamespaces.length}</div>
-              <p className="text-xs text-slate-400 mt-1">Active networks</p>
+              <p className="text-xs text-slate-400 mt-1">Active projects</p>
             </CardContent>
           </Card>
 
@@ -85,12 +85,12 @@ export function Dashboard() {
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
-          {/* Resource Usage */}
+          {/* Docker Fleet Usage */}
           <Card className="bg-slate-900 border-slate-800">
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <Activity className="w-5 h-5 text-blue-500" />
-                Cluster Resources
+                Docker Fleet Resources
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-6">
@@ -131,15 +131,15 @@ export function Dashboard() {
             </CardContent>
           </Card>
 
-          {/* Namespaces Quick View */}
+          {/* Projects Quick View */}
           <Card className="bg-slate-900 border-slate-800">
             <CardHeader>
               <div className="flex items-center justify-between">
                 <CardTitle className="flex items-center gap-2">
                   <Layers className="w-5 h-5 text-purple-500" />
-                  Namespaces
+                  Projects
                 </CardTitle>
-                <Link to="/global/namespaces" className="text-sm text-blue-400 hover:text-blue-300">
+                <Link to="/global/projects" className="text-sm text-blue-400 hover:text-blue-300">
                   View all
                 </Link>
               </div>
@@ -149,7 +149,7 @@ export function Dashboard() {
                 {mockNamespaces.map((ns) => (
                   <Link
                     key={ns.id}
-                    to={`/global/namespaces/${ns.id}`}
+                    to={`/global/projects/${ns.id}`}
                     className="block p-3 rounded-lg bg-slate-800/50 hover:bg-slate-800 transition-colors"
                   >
                     <div className="flex items-start justify-between mb-2">
@@ -195,7 +195,7 @@ export function Dashboard() {
                   <tr className="border-b border-slate-800 text-left">
                     <th className="pb-3 text-sm font-medium text-slate-400">Name</th>
                     <th className="pb-3 text-sm font-medium text-slate-400">Status</th>
-                    <th className="pb-3 text-sm font-medium text-slate-400">Namespace</th>
+                    <th className="pb-3 text-sm font-medium text-slate-400">Project</th>
                     <th className="pb-3 text-sm font-medium text-slate-400">Players</th>
                     <th className="pb-3 text-sm font-medium text-slate-400">Resources</th>
                     <th className="pb-3 text-sm font-medium text-slate-400">Uptime</th>

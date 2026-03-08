@@ -32,19 +32,19 @@ export function GlobalDashboard() {
             <Globe className="w-8 h-8 text-blue-500" />
             <h1 className="text-3xl font-bold">Global Dashboard</h1>
           </div>
-          <p className="text-slate-400">Cluster-wide overview and management</p>
+          <p className="text-slate-400">Docker fleet-wide overview and management</p>
         </div>
 
         {/* Stats Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
           <Card className="bg-slate-900 border-slate-800">
             <CardHeader className="flex flex-row items-center justify-between pb-2">
-              <CardTitle className="text-sm font-medium text-slate-400">Namespaces</CardTitle>
+              <CardTitle className="text-sm font-medium text-slate-400">Projects</CardTitle>
               <Layers className="w-4 h-4 text-purple-500" />
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold">{mockNamespaces.length}</div>
-              <p className="text-xs text-slate-400 mt-1">Active networks</p>
+              <p className="text-xs text-slate-400 mt-1">Active projects</p>
             </CardContent>
           </Card>
 
@@ -86,12 +86,12 @@ export function GlobalDashboard() {
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
-          {/* Cluster Resources */}
+          {/* Docker Fleet Resources */}
           <Card className="bg-slate-900 border-slate-800">
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <Activity className="w-5 h-5 text-blue-500" />
-                Cluster Resources
+                Docker Fleet Resources
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-6">
@@ -121,34 +121,34 @@ export function GlobalDashboard() {
                 <div className="grid grid-cols-2 gap-4 text-sm">
                   <div>
                     <p className="text-slate-400">Total CPU</p>
-                    <p className="font-semibold">48 cores</p>
+                    <p className="font-semibold">48 host cores</p>
                   </div>
                   <div>
                     <p className="text-slate-400">Total RAM</p>
                     <p className="font-semibold">128 GB</p>
                   </div>
                   <div>
-                    <p className="text-slate-400">Nodes</p>
+                    <p className="text-slate-400">Docker Hosts</p>
                     <p className="font-semibold">12 active</p>
                   </div>
                   <div>
-                    <p className="text-slate-400">Version</p>
-                    <p className="font-semibold">v1.28.3</p>
+                    <p className="text-slate-400">Docker Engine</p>
+                    <p className="font-semibold">v27.0.3</p>
                   </div>
                 </div>
               </div>
             </CardContent>
           </Card>
 
-          {/* Namespaces Overview */}
+          {/* Projects Overview */}
           <Card className="bg-slate-900 border-slate-800">
             <CardHeader>
               <div className="flex items-center justify-between">
                 <CardTitle className="flex items-center gap-2">
                   <Layers className="w-5 h-5 text-purple-500" />
-                  Namespaces Overview
+                  Projects Overview
                 </CardTitle>
-                <Link to="/global/namespaces" className="text-sm text-blue-400 hover:text-blue-300">
+                <Link to="/global/projects" className="text-sm text-blue-400 hover:text-blue-300">
                   View all
                 </Link>
               </div>
@@ -158,7 +158,7 @@ export function GlobalDashboard() {
                 {mockNamespaces.map((ns) => (
                   <Link
                     key={ns.id}
-                    to={`/global/namespaces/${ns.id}`}
+                    to={`/global/projects/${ns.id}`}
                     className="block p-3 rounded-lg bg-slate-800/50 hover:bg-slate-800 transition-colors"
                   >
                     <div className="flex items-start justify-between mb-2">
@@ -207,7 +207,7 @@ export function GlobalDashboard() {
                           {running} running / {nsServers.length} total
                         </Badge>
                       </div>
-                      <span className="text-sm text-slate-400">{namespaceTotalPct.toFixed(0)}% of cluster</span>
+                      <span className="text-sm text-slate-400">{namespaceTotalPct.toFixed(0)}% of fleet</span>
                     </div>
                     <div className="h-2 w-full overflow-hidden rounded-full bg-slate-800">
                       <div
@@ -234,9 +234,9 @@ export function GlobalDashboard() {
             <div className="flex gap-3">
               <AlertCircle className="w-5 h-5 text-amber-500 flex-shrink-0 mt-0.5" />
               <div>
-                <h4 className="font-medium text-amber-200 mb-1">Cluster Health Check</h4>
+                <h4 className="font-medium text-amber-200 mb-1">Docker Fleet Health Check</h4>
                 <p className="text-sm text-amber-300/80">
-                  All namespaces operational. Consider reviewing resource allocation for high-usage servers.
+                  All projects are operational. Review container resource limits on high-usage servers.
                 </p>
               </div>
             </div>

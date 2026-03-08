@@ -24,7 +24,7 @@ export function GlobalUserDetail() {
   );
 
   const globalRoles = mockRoles.filter((role) => role.namespaceId === 'global');
-  const namespaceRoles = mockRoles.filter((role) => role.namespaceId === 'namespace');
+  const namespaceRoles = mockRoles.filter((role) => role.namespaceId === 'project');
 
   const globalBinding = bindings.find((binding) => binding.namespaceId === 'global');
   const namespaceBindings = bindings.filter((binding) => binding.namespaceId !== 'global');
@@ -274,7 +274,7 @@ export function GlobalUserDetail() {
 
         <Card className="bg-slate-900 border-slate-800">
           <CardHeader>
-            <CardTitle>Namespace Assignments</CardTitle>
+            <CardTitle>Project Assignments</CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="relative">
@@ -282,7 +282,7 @@ export function GlobalUserDetail() {
               <Input
                 value={namespaceSearch}
                 onChange={(e) => setNamespaceSearch(e.target.value)}
-                placeholder="Search all namespaces to add assignments..."
+                placeholder="Search all projects to add assignments..."
                 className="pl-10 bg-slate-800 border-slate-700"
               />
             </div>
@@ -301,7 +301,7 @@ export function GlobalUserDetail() {
               >
                 <p className="text-sm font-medium text-slate-300">Available</p>
                 {availableNamespaces.length === 0 && (
-                  <div className="text-sm text-slate-500">No available namespaces.</div>
+                  <div className="text-sm text-slate-500">No available projects.</div>
                 )}
                 {availableNamespaces.map((ns) => (
                   <div
@@ -329,7 +329,7 @@ export function GlobalUserDetail() {
               >
                 <p className="text-sm font-medium text-slate-300">Current Assignments</p>
                 {currentAssignments.length === 0 && (
-                  <div className="text-sm text-slate-500">No namespace assignments.</div>
+                  <div className="text-sm text-slate-500">No project assignments.</div>
                 )}
                 {currentAssignments.map(({ binding, namespace }) => {
                   return (

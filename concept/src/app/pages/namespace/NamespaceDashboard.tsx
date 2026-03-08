@@ -24,8 +24,8 @@ export function NamespaceDashboard() {
       <div className="min-h-screen bg-slate-950 text-white p-6 flex items-center justify-center">
         <div className="text-center">
           <Layers className="w-12 h-12 text-slate-600 mx-auto mb-4" />
-          <h2 className="text-xl font-semibold mb-2">No Namespace Selected</h2>
-          <p className="text-slate-400">Please select a namespace from the dropdown</p>
+          <h2 className="text-xl font-semibold mb-2">No Project Selected</h2>
+          <p className="text-slate-400">Please select a project from the dropdown</p>
         </div>
       </div>
     );
@@ -233,7 +233,7 @@ export function NamespaceDashboard() {
                 <div>
                   <h4 className="font-medium text-amber-200 mb-1">High Resource Usage</h4>
                   <p className="text-sm text-amber-300/80">
-                    Some servers in this namespace are experiencing high resource usage. Consider scaling or optimization.
+                    Some servers in this project are experiencing high resource usage. Consider scaling or optimization.
                   </p>
                 </div>
               </div>
@@ -245,7 +245,7 @@ export function NamespaceDashboard() {
               <div className="flex gap-3">
                 <Activity className="w-5 h-5 text-green-500 flex-shrink-0 mt-0.5" />
                 <div>
-                  <h4 className="font-medium text-green-200 mb-1">Namespace Healthy</h4>
+                  <h4 className="font-medium text-green-200 mb-1">Project Healthy</h4>
                   <p className="text-sm text-green-300/80">
                     All servers are running smoothly with optimal resource usage.
                   </p>

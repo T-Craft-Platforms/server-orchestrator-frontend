@@ -121,7 +121,7 @@ export function GlobalTemplates() {
               <Globe className="w-6 h-6 text-blue-500" />
               <h1 className="text-3xl font-bold">Global Templates</h1>
             </div>
-            <p className="text-slate-400">Predefined server blueprints available across all namespaces</p>
+            <p className="text-slate-400">Predefined server blueprints available across all projects</p>
           </div>
           <Dialog
             open={isCreateOpen}

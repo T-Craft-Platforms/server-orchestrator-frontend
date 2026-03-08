@@ -42,7 +42,7 @@ export function NamespaceTemplates() {
               <Layers className="w-6 h-6 text-purple-500" />
               <h1 className="text-3xl font-bold">Templates</h1>
             </div>
-            <p className="text-slate-400">Available templates for {namespace.name}</p>
+            <p className="text-slate-400">Available templates for project {namespace.name}</p>
           </div>
           <DeployServerDialog
             fixedNamespaceId={selectedNamespace ?? undefined}
