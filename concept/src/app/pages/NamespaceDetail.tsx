@@ -14,7 +14,7 @@ export function NamespaceDetail() {
 
   if (!namespace) {
     return (
-      <div className="min-h-screen bg-slate-950 text-white p-6 flex items-center justify-center">
+      <div className="min-h-screen bg-slate-950 text-white p-4 sm:p-6 flex items-center justify-center">
         <div className="text-center">
           <Layers className="w-12 h-12 text-slate-600 mx-auto mb-4" />
           <h2 className="text-xl font-semibold mb-2">Project not found</h2>
@@ -33,20 +33,20 @@ export function NamespaceDetail() {
   return (
     <div className="min-h-screen bg-slate-950 text-white">
       {/* Header */}
-      <div className="bg-slate-900 border-b border-slate-800 p-6">
+      <div className="bg-slate-900 border-b border-slate-800 p-4 sm:p-6">
         <div className="max-w-7xl mx-auto">
           <Link to="/global/projects" className="inline-flex items-center gap-2 text-slate-400 hover:text-white mb-4">
             <ArrowLeft className="w-4 h-4" />
             Back to projects
           </Link>
           
-          <div className="flex items-start justify-between">
-            <div className="flex items-start gap-4">
+          <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+            <div className="flex items-start gap-4 min-w-0">
               <div className="p-3 rounded-lg bg-purple-600/20">
                 <Layers className="w-8 h-8 text-purple-400" />
               </div>
               <div>
-                <h1 className="text-3xl font-bold mb-2">{namespace.name}</h1>
+                <h1 className="text-2xl sm:text-3xl font-bold mb-2">{namespace.name}</h1>
                 <p className="text-slate-400 mb-2">{namespace.description}</p>
                 <div className="flex items-center gap-2 flex-wrap">
                   {namespace.labels.map((label) => (
@@ -61,13 +61,13 @@ export function NamespaceDetail() {
             <DeployServerDialog
               fixedNamespaceId={namespace.id}
               triggerLabel="Deploy Server"
-              triggerClassName="bg-blue-600 hover:bg-blue-700"
+              triggerClassName="w-full sm:w-auto bg-blue-600 hover:bg-blue-700"
             />
           </div>
         </div>
       </div>
 
-      <div className="max-w-7xl mx-auto p-6">
+      <div className="max-w-7xl mx-auto p-4 sm:p-6">
         {/* Stats Cards */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
           <Card className="bg-slate-900 border-slate-800">
@@ -110,24 +110,26 @@ export function NamespaceDetail() {
 
         {/* Tabs */}
         <Tabs defaultValue="servers" className="space-y-4">
-          <TabsList className="bg-slate-900 border border-slate-800">
-            <TabsTrigger value="servers">
-              <Server className="w-4 h-4 mr-2" />
-              Servers
-            </TabsTrigger>
-            <TabsTrigger value="resources">
-              <FileBox className="w-4 h-4 mr-2" />
-              Resources
-            </TabsTrigger>
-            <TabsTrigger value="rbac">
-              <Users className="w-4 h-4 mr-2" />
-              RBAC
-            </TabsTrigger>
-            <TabsTrigger value="settings">
-              <Settings className="w-4 h-4 mr-2" />
-              Settings
-            </TabsTrigger>
-          </TabsList>
+          <div className="overflow-x-auto pb-1">
+            <TabsList className="bg-slate-900 border border-slate-800 w-max min-w-full justify-start">
+              <TabsTrigger value="servers">
+                <Server className="w-4 h-4 mr-2" />
+                Servers
+              </TabsTrigger>
+              <TabsTrigger value="resources">
+                <FileBox className="w-4 h-4 mr-2" />
+                Resources
+              </TabsTrigger>
+              <TabsTrigger value="rbac">
+                <Users className="w-4 h-4 mr-2" />
+                RBAC
+              </TabsTrigger>
+              <TabsTrigger value="settings">
+                <Settings className="w-4 h-4 mr-2" />
+                Settings
+              </TabsTrigger>
+            </TabsList>
+          </div>
 
           {/* Servers Tab */}
           <TabsContent value="servers">

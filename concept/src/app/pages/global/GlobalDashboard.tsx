@@ -24,13 +24,13 @@ export function GlobalDashboard() {
   const avgMemory = Math.round(mockServers.reduce((sum, s) => sum + s.memory, 0) / mockServers.length);
 
   return (
-    <div className="min-h-screen bg-slate-950 text-white p-6">
+    <div className="min-h-screen bg-slate-950 text-white p-4 sm:p-6">
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <div className="mb-8">
           <div className="flex items-center gap-2 mb-2">
             <Globe className="w-8 h-8 text-blue-500" />
-            <h1 className="text-3xl font-bold">Global Dashboard</h1>
+            <h1 className="text-2xl sm:text-3xl font-bold">Global Dashboard</h1>
           </div>
           <p className="text-slate-400">Docker fleet-wide overview and management</p>
         </div>

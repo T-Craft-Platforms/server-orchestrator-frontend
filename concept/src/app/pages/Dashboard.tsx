@@ -24,11 +24,11 @@ export function Dashboard() {
   const recentServers = mockServers.slice(0, 5);
 
   return (
-    <div className="min-h-screen bg-slate-950 text-white p-6">
+    <div className="min-h-screen bg-slate-950 text-white p-4 sm:p-6">
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <div className="mb-8">
-          <h1 className="text-3xl font-bold mb-2">Dashboard</h1>
+          <h1 className="text-2xl sm:text-3xl font-bold mb-2">Dashboard</h1>
           <p className="text-slate-400">Overview of your Minecraft server infrastructure</p>
         </div>
 

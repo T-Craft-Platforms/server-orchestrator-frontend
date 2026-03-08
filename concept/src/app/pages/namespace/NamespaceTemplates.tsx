@@ -33,14 +33,14 @@ export function NamespaceTemplates() {
   }
 
   return (
-    <div className="min-h-screen bg-slate-950 text-white p-6">
+    <div className="min-h-screen bg-slate-950 text-white p-4 sm:p-6">
       <div className="max-w-7xl mx-auto">
         {/* Header */}
-        <div className="flex items-center justify-between mb-8">
+        <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between mb-8">
           <div>
             <div className="flex items-center gap-2 mb-2">
               <Layers className="w-6 h-6 text-purple-500" />
-              <h1 className="text-3xl font-bold">Templates</h1>
+              <h1 className="text-2xl sm:text-3xl font-bold">Templates</h1>
             </div>
             <p className="text-slate-400">Available templates for project {namespace.name}</p>
           </div>

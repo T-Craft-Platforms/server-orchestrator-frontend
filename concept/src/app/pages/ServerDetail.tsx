@@ -70,7 +70,7 @@ export function ServerDetail() {
 
   if (!server) {
     return (
-      <div className="min-h-screen bg-slate-950 text-white p-6 flex items-center justify-center">
+      <div className="min-h-screen bg-slate-950 text-white p-4 sm:p-6 flex items-center justify-center">
         <div className="text-center">
           <ServerIcon className="w-12 h-12 text-slate-600 mx-auto mb-4" />
           <h2 className="text-xl font-semibold mb-2">Server not found</h2>
@@ -102,20 +102,20 @@ export function ServerDetail() {
   return (
     <div className="min-h-screen bg-slate-950 text-white">
       {/* Header */}
-      <div className="bg-slate-900 border-b border-slate-800 p-6">
+      <div className="bg-slate-900 border-b border-slate-800 p-4 sm:p-6">
         <div className="max-w-7xl mx-auto">
           <Link to=".." relative="path" className="inline-flex items-center gap-2 text-slate-400 hover:text-white mb-4">
             <ArrowLeft className="w-4 h-4" />
             Back to servers
           </Link>
           
-          <div className="flex items-start justify-between">
-            <div className="flex items-start gap-4">
+          <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+            <div className="flex items-start gap-4 min-w-0">
               <div className="p-3 rounded-lg bg-blue-600/20">
                 <ServerIcon className="w-8 h-8 text-blue-400" />
               </div>
               <div>
-                <h1 className="text-3xl font-bold mb-2">{server.name}</h1>
+                <h1 className="text-2xl sm:text-3xl font-bold mb-2">{server.name}</h1>
                 <div className="flex items-center gap-2 flex-wrap">
                   <Badge 
                     variant={server.status === 'running' ? 'default' : 'secondary'}
@@ -138,20 +138,20 @@ export function ServerDetail() {
               </div>
             </div>
             
-            <div className="flex gap-2">
+            <div className="flex w-full sm:w-auto gap-2">
               {server.status === 'running' ? (
                 <>
-                  <Button variant="outline" className="border-slate-700">
+                  <Button variant="outline" className="border-slate-700 flex-1 sm:flex-none">
                     <RotateCw className="w-4 h-4 mr-2" />
                     Restart
                   </Button>
-                  <Button variant="outline" className="border-slate-700">
+                  <Button variant="outline" className="border-slate-700 flex-1 sm:flex-none">
                     <Square className="w-4 h-4 mr-2" />
                     Stop
                   </Button>
                 </>
               ) : (
-                <Button className="bg-green-600 hover:bg-green-700">
+                <Button className="bg-green-600 hover:bg-green-700 w-full sm:w-auto">
                   <Play className="w-4 h-4 mr-2" />
                   Start
                 </Button>
@@ -161,7 +161,7 @@ export function ServerDetail() {
         </div>
       </div>
 
-      <div className="max-w-7xl mx-auto p-6">
+      <div className="max-w-7xl mx-auto p-4 sm:p-6">
         {/* Stats Cards */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
           <Card className="bg-slate-900 border-slate-800">
@@ -215,28 +215,30 @@ export function ServerDetail() {
 
         {/* Tabs */}
         <Tabs defaultValue="overview" className="space-y-4">
-          <TabsList className="bg-slate-900 border border-slate-800">
-            <TabsTrigger value="overview">
-              <Activity className="w-4 h-4 mr-2" />
-              Overview
-            </TabsTrigger>
-            <TabsTrigger value="files">
-              <FileText className="w-4 h-4 mr-2" />
-              Files
-            </TabsTrigger>
-            <TabsTrigger value="console">
-              <Terminal className="w-4 h-4 mr-2" />
-              Console
-            </TabsTrigger>
-            <TabsTrigger value="settings">
-              <Settings className="w-4 h-4 mr-2" />
-              Settings
-            </TabsTrigger>
-            <TabsTrigger value="template-vars">
-              <SlidersHorizontal className="w-4 h-4 mr-2" />
-              Template Vars
-            </TabsTrigger>
-          </TabsList>
+          <div className="overflow-x-auto pb-1">
+            <TabsList className="bg-slate-900 border border-slate-800 w-max min-w-full justify-start">
+              <TabsTrigger value="overview">
+                <Activity className="w-4 h-4 mr-2" />
+                Overview
+              </TabsTrigger>
+              <TabsTrigger value="files">
+                <FileText className="w-4 h-4 mr-2" />
+                Files
+              </TabsTrigger>
+              <TabsTrigger value="console">
+                <Terminal className="w-4 h-4 mr-2" />
+                Console
+              </TabsTrigger>
+              <TabsTrigger value="settings">
+                <Settings className="w-4 h-4 mr-2" />
+                Settings
+              </TabsTrigger>
+              <TabsTrigger value="template-vars">
+                <SlidersHorizontal className="w-4 h-4 mr-2" />
+                Template Vars
+              </TabsTrigger>
+            </TabsList>
+          </div>
 
           {/* Overview Tab */}
           <TabsContent value="overview" className="space-y-4">

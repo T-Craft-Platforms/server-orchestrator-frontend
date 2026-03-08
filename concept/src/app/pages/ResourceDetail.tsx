@@ -94,7 +94,7 @@ export function ResourceDetail() {
 
   if (!resource || (isNamespaceScope && !namespace)) {
     return (
-      <div className="min-h-screen bg-slate-950 text-white p-6 flex items-center justify-center">
+      <div className="min-h-screen bg-slate-950 text-white p-4 sm:p-6 flex items-center justify-center">
         <div className="text-center">
           <FileBox className="w-12 h-12 text-slate-600 mx-auto mb-4" />
           <h2 className="text-xl font-semibold mb-2">Resource not found</h2>
@@ -122,19 +122,19 @@ export function ResourceDetail() {
 
   return (
     <div className="min-h-screen bg-slate-950 text-white">
-      <div className="bg-slate-900 border-b border-slate-800 p-6">
+      <div className="bg-slate-900 border-b border-slate-800 p-4 sm:p-6">
         <div className="max-w-6xl mx-auto">
           <Link to={backTo} className="inline-flex items-center gap-2 text-slate-400 hover:text-white mb-4">
             <ArrowLeft className="w-4 h-4" />
             Back to resources
           </Link>
-          <div className="flex items-start justify-between gap-4">
-            <div className="flex items-start gap-4">
+          <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+            <div className="flex items-start gap-4 min-w-0">
               <div className={`p-3 rounded-lg ${typeColor[resource.type] ?? 'bg-slate-800 text-slate-200'}`}>
                 <Package className="w-8 h-8" />
               </div>
               <div>
-                <h1 className="text-3xl font-bold mb-2">{resource.name}</h1>
+                <h1 className="text-2xl sm:text-3xl font-bold mb-2">{resource.name}</h1>
                 <p className="text-slate-400 mb-3">{resource.description}</p>
                 <div className="flex gap-2 flex-wrap">
                   <Badge className={typeColor[resource.type] ?? 'bg-slate-800 text-slate-200'}>{resource.type}</Badge>
@@ -155,12 +155,12 @@ export function ResourceDetail() {
                 </div>
               </div>
             </div>
-            <div className="flex gap-2">
-              <Button variant="outline" className="border-slate-700" onClick={downloadResource}>
+            <div className="flex w-full sm:w-auto flex-col sm:flex-row gap-2">
+              <Button variant="outline" className="border-slate-700 w-full sm:w-auto" onClick={downloadResource}>
                 <Download className="w-4 h-4 mr-2" />
                 Download Resource
               </Button>
-              <Button variant="ghost" className="text-red-400 hover:text-red-300">
+              <Button variant="ghost" className="text-red-400 hover:text-red-300 w-full sm:w-auto">
                 <Trash2 className="w-4 h-4 mr-2" />
                 Remove
               </Button>
@@ -169,7 +169,7 @@ export function ResourceDetail() {
         </div>
       </div>
 
-      <div className="max-w-6xl mx-auto p-6 space-y-6">
+      <div className="max-w-6xl mx-auto p-4 sm:p-6 space-y-6">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <Card className="bg-slate-900 border-slate-800">
             <CardContent className="pt-6">

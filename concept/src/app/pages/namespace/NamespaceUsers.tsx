@@ -59,13 +59,13 @@ export function NamespaceUsers() {
   }
 
   return (
-    <div className="min-h-screen bg-slate-950 text-white p-6">
+    <div className="min-h-screen bg-slate-950 text-white p-4 sm:p-6">
       <div className="max-w-7xl mx-auto">
-        <div className="flex items-center justify-between mb-8">
+        <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between mb-8">
           <div>
             <div className="flex items-center gap-2 mb-2">
               <Users className="w-8 h-8 text-purple-500" />
-              <h1 className="text-3xl font-bold">Project Access</h1>
+              <h1 className="text-2xl sm:text-3xl font-bold">Project Access</h1>
             </div>
             <p className="text-slate-400">Members and RBAC policies for {namespace.name}</p>
           </div>
@@ -136,7 +136,7 @@ export function NamespaceUsers() {
             <CardTitle>Project Members</CardTitle>
           </CardHeader>
           <CardContent>
-            <Table>
+            <Table className="min-w-[760px]">
               <TableHeader>
                 <TableRow className="border-slate-800 hover:bg-transparent">
                   <TableHead className="text-slate-400">User</TableHead>
@@ -200,7 +200,7 @@ export function NamespaceUsers() {
             <CardTitle>Project Roles</CardTitle>
           </CardHeader>
           <CardContent>
-            <Table>
+            <Table className="min-w-[760px]">
               <TableHeader>
                 <TableRow className="border-slate-800 hover:bg-transparent">
                   <TableHead className="text-slate-400">Role</TableHead>

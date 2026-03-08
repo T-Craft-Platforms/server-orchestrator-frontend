@@ -30,12 +30,12 @@ export function Servers() {
   const uniqueNamespaces = Array.from(new Set(mockServers.map(s => s.namespaceName)));
 
   return (
-    <div className="min-h-screen bg-slate-950 text-white p-6">
+    <div className="min-h-screen bg-slate-950 text-white p-4 sm:p-6">
       <div className="max-w-7xl mx-auto">
         {/* Header */}
-        <div className="flex items-center justify-between mb-8">
+        <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between mb-8">
           <div>
-            <h1 className="text-3xl font-bold mb-2">Servers</h1>
+            <h1 className="text-2xl sm:text-3xl font-bold mb-2">Servers</h1>
             <p className="text-slate-400">Manage your containerized Minecraft servers</p>
           </div>
           <Button className="bg-blue-600 hover:bg-blue-700">

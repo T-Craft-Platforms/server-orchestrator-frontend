@@ -20,12 +20,12 @@ export function NamespaceSettings() {
   }
 
   return (
-    <div className="min-h-screen bg-slate-950 text-white p-6">
+    <div className="min-h-screen bg-slate-950 text-white p-4 sm:p-6">
       <div className="max-w-5xl mx-auto">
         <div className="mb-8">
           <div className="flex items-center gap-2 mb-2">
             <Layers className="w-8 h-8 text-purple-500" />
-            <h1 className="text-3xl font-bold">Project Settings</h1>
+            <h1 className="text-2xl sm:text-3xl font-bold">Project Settings</h1>
           </div>
           <p className="text-slate-400">Docker runtime and policy defaults for {namespace.name}</p>
         </div>

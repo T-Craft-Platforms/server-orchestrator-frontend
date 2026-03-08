@@ -115,9 +115,9 @@ export function RootLayout() {
     <div className="min-h-screen bg-slate-950">
       {/* Mobile menu button */}
       <div className="lg:hidden fixed top-0 left-0 right-0 z-50 bg-slate-900 border-b border-slate-800 px-4 py-3 flex items-center justify-between">
-        <div className="flex items-center gap-2">
+        <div className="flex min-w-0 items-center gap-2">
           <Server className="w-6 h-6 text-blue-500" />
-          <span className="font-semibold text-white">Server Orchestrator</span>
+          <span className="font-semibold text-white truncate">Server Orchestrator</span>
         </div>
         <Button
           variant="ghost"
@@ -131,14 +131,14 @@ export function RootLayout() {
 
       {/* Sidebar */}
       <aside className={`
-        fixed top-0 left-0 bottom-0 z-40 w-64 bg-slate-900 border-r border-slate-800
+        fixed top-14 left-0 bottom-0 z-40 w-64 bg-slate-900 border-r border-slate-800
         transform transition-transform duration-200 ease-in-out
-        lg:translate-x-0
+        lg:top-0 lg:translate-x-0
         ${mobileMenuOpen ? 'translate-x-0' : '-translate-x-full'}
       `}>
         <div className="flex flex-col h-full">
           {/* Logo */}
-          <div className="p-6 border-b border-slate-800">
+          <div className="hidden lg:block p-6 border-b border-slate-800">
             <div className="flex items-center gap-2">
               <Server className="w-8 h-8 text-blue-500" />
               <div>

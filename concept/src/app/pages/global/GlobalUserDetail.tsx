@@ -73,7 +73,7 @@ export function GlobalUserDetail() {
 
   if (!user) {
     return (
-      <div className="min-h-screen bg-slate-950 text-white p-6 flex items-center justify-center">
+      <div className="min-h-screen bg-slate-950 text-white p-4 sm:p-6 flex items-center justify-center">
         <div className="text-center">
           <h2 className="text-xl font-semibold mb-2">User not found</h2>
           <Link to="/global/users" className="text-blue-400 hover:text-blue-300">
@@ -140,7 +140,7 @@ export function GlobalUserDetail() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-950 text-white p-6">
+    <div className="min-h-screen bg-slate-950 text-white p-4 sm:p-6">
       <div className="max-w-5xl mx-auto space-y-6">
         <div>
           <Link to="/global/users" className="inline-flex items-center gap-2 text-slate-400 hover:text-white mb-3">
@@ -149,7 +149,7 @@ export function GlobalUserDetail() {
           </Link>
           <div className="flex items-center gap-2">
             <User className="w-7 h-7 text-blue-500" />
-            <h1 className="text-3xl font-bold">{user.displayName ?? user.username}</h1>
+            <h1 className="text-2xl sm:text-3xl font-bold">{user.displayName ?? user.username}</h1>
           </div>
           <p className="text-slate-400 mt-1">Edit user profile and role assignments</p>
         </div>
