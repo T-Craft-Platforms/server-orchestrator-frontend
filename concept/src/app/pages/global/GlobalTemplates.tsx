@@ -7,11 +7,34 @@ import { Button } from '../../components/ui/button';
 import { Input } from '../../components/ui/input';
 import { Badge } from '../../components/ui/badge';
 import { mockTemplates } from '../../data/mockData';
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '../../components/ui/dialog';
+import { Label } from '../../components/ui/label';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../../components/ui/select';
+import { Textarea } from '../../components/ui/textarea';
+import { Switch } from '../../components/ui/switch';
+import { Checkbox } from '../../components/ui/checkbox';
+import { DeployServerDialog } from '../../components/DeployServerDialog';
+import type { Template } from '../../types';
 
 export function GlobalTemplates() {
+  const [templates, setTemplates] = useState<Template[]>([...mockTemplates]);
   const [searchQuery, setSearchQuery] = useState('');
+  const [isCreateOpen, setIsCreateOpen] = useState(false);
+  const [error, setError] = useState('');
+  const [name, setName] = useState('');
+  const [description, setDescription] = useState('');
+  const [type, setType] = useState<Template['type']>('custom');
+  const [minecraftVersion, setMinecraftVersion] = useState('1.20.4');
+  const [javaVersion, setJavaVersion] = useState('21');
+  const [defaultMemory, setDefaultMemory] = useState('4G');
+  const [defaultCpu, setDefaultCpu] = useState('2000m');
+  const [icon, setIcon] = useState('FileCode');
+  const [canModifyJavaArgs, setCanModifyJavaArgs] = useState(true);
+  const [canInstallPlugins, setCanInstallPlugins] = useState(true);
+  const [canModifyConfig, setCanModifyConfig] = useState(true);
+  const [allowedResources, setAllowedResources] = useState<Array<'plugin' | 'mod' | 'config' | 'world' | 'datapack'>>(['plugin', 'config']);
 
-  const filteredTemplates = mockTemplates.filter(template =>
+  const filteredTemplates = templates.filter(template =>
     template.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
     template.description.toLowerCase().includes(searchQuery.toLowerCase())
   );
@@ -19,6 +42,69 @@ export function GlobalTemplates() {
   const getIcon = (iconName: string) => {
     const Icon = (Icons as any)[iconName] || FileCode;
     return Icon;
+  };
+
+  const resetForm = () => {
+    setError('');
+    setName('');
+    setDescription('');
+    setType('custom');
+    setMinecraftVersion('1.20.4');
+    setJavaVersion('21');
+    setDefaultMemory('4G');
+    setDefaultCpu('2000m');
+    setIcon('FileCode');
+    setCanModifyJavaArgs(true);
+    setCanInstallPlugins(true);
+    setCanModifyConfig(true);
+    setAllowedResources(['plugin', 'config']);
+  };
+
+  const toggleAllowedResource = (resource: 'plugin' | 'mod' | 'config' | 'world' | 'datapack') => {
+    setAllowedResources((current) =>
+      current.includes(resource)
+        ? current.filter((item) => item !== resource)
+        : [...current, resource]
+    );
+  };
+
+  const createTemplate = () => {
+    if (!name.trim()) {
+      setError('Template name is required.');
+      return;
+    }
+    if (!description.trim()) {
+      setError('Description is required.');
+      return;
+    }
+    if (allowedResources.length === 0) {
+      setError('Select at least one allowed resource type.');
+      return;
+    }
+
+    const nextTemplate: Template = {
+      id: `tpl-${Date.now()}`,
+      name: name.trim(),
+      description: description.trim(),
+      type,
+      minecraftVersion: minecraftVersion.trim(),
+      javaVersion: javaVersion.trim(),
+      defaultMemory: defaultMemory.trim(),
+      defaultCpu: defaultCpu.trim(),
+      restrictions: {
+        canModifyJavaArgs,
+        canInstallPlugins,
+        canModifyConfig,
+        allowedResources,
+      },
+      icon,
+      createdAt: new Date().toISOString(),
+    };
+
+    setTemplates((current) => [nextTemplate, ...current]);
+    mockTemplates.unshift(nextTemplate);
+    setIsCreateOpen(false);
+    resetForm();
   };
 
   return (
@@ -33,10 +119,132 @@ export function GlobalTemplates() {
             </div>
             <p className="text-slate-400">Predefined server blueprints available across all namespaces</p>
           </div>
-          <Button className="bg-blue-600 hover:bg-blue-700">
-            <Plus className="w-4 h-4 mr-2" />
-            Create Template
-          </Button>
+          <Dialog
+            open={isCreateOpen}
+            onOpenChange={(open) => {
+              setIsCreateOpen(open);
+              if (!open) {
+                resetForm();
+              }
+            }}
+          >
+            <DialogTrigger asChild>
+              <Button className="bg-blue-600 hover:bg-blue-700">
+                <Plus className="w-4 h-4 mr-2" />
+                Create Template
+              </Button>
+            </DialogTrigger>
+            <DialogContent className="bg-slate-900 border-slate-800 text-white max-w-2xl">
+              <DialogHeader>
+                <DialogTitle>Create Template</DialogTitle>
+                <DialogDescription className="text-slate-400">
+                  Define a reusable server blueprint with runtime defaults and restrictions.
+                </DialogDescription>
+              </DialogHeader>
+              <div className="space-y-4 py-2">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="template-name">Name</Label>
+                    <Input id="template-name" value={name} onChange={(e) => setName(e.target.value)} className="bg-slate-800 border-slate-700" placeholder="Skyblock Production" />
+                  </div>
+                  <div className="space-y-2">
+                    <Label>Type</Label>
+                    <Select value={type} onValueChange={(value) => setType(value as Template['type'])}>
+                      <SelectTrigger className="bg-slate-800 border-slate-700">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent className="bg-slate-900 border-slate-800">
+                        <SelectItem value="proxy">proxy</SelectItem>
+                        <SelectItem value="lobby">lobby</SelectItem>
+                        <SelectItem value="survival">survival</SelectItem>
+                        <SelectItem value="creative">creative</SelectItem>
+                        <SelectItem value="modded">modded</SelectItem>
+                        <SelectItem value="custom">custom</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="template-description">Description</Label>
+                  <Textarea id="template-description" value={description} onChange={(e) => setDescription(e.target.value)} className="bg-slate-800 border-slate-700" placeholder="Template for managed production skyblock instances." />
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="template-mc">Minecraft</Label>
+                    <Input id="template-mc" value={minecraftVersion} onChange={(e) => setMinecraftVersion(e.target.value)} className="bg-slate-800 border-slate-700" />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="template-java">Java</Label>
+                    <Input id="template-java" value={javaVersion} onChange={(e) => setJavaVersion(e.target.value)} className="bg-slate-800 border-slate-700" />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="template-memory">Memory</Label>
+                    <Input id="template-memory" value={defaultMemory} onChange={(e) => setDefaultMemory(e.target.value)} className="bg-slate-800 border-slate-700" />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="template-cpu">CPU</Label>
+                    <Input id="template-cpu" value={defaultCpu} onChange={(e) => setDefaultCpu(e.target.value)} className="bg-slate-800 border-slate-700" />
+                  </div>
+                </div>
+
+                <div className="space-y-2">
+                  <Label>Icon</Label>
+                  <Select value={icon} onValueChange={setIcon}>
+                    <SelectTrigger className="bg-slate-800 border-slate-700">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent className="bg-slate-900 border-slate-800">
+                      <SelectItem value="FileCode">FileCode</SelectItem>
+                      <SelectItem value="Server">Server</SelectItem>
+                      <SelectItem value="Network">Network</SelectItem>
+                      <SelectItem value="Pickaxe">Pickaxe</SelectItem>
+                      <SelectItem value="Wrench">Wrench</SelectItem>
+                      <SelectItem value="Home">Home</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                <div className="rounded-md border border-slate-800 p-3 space-y-3">
+                  <p className="text-sm font-medium text-slate-300">Restrictions</p>
+                  <label className="flex items-center justify-between gap-2 text-sm">
+                    <span>Allow Java arguments override</span>
+                    <Switch checked={canModifyJavaArgs} onCheckedChange={setCanModifyJavaArgs} />
+                  </label>
+                  <label className="flex items-center justify-between gap-2 text-sm">
+                    <span>Allow plugin installation</span>
+                    <Switch checked={canInstallPlugins} onCheckedChange={setCanInstallPlugins} />
+                  </label>
+                  <label className="flex items-center justify-between gap-2 text-sm">
+                    <span>Allow config modifications</span>
+                    <Switch checked={canModifyConfig} onCheckedChange={setCanModifyConfig} />
+                  </label>
+                </div>
+
+                <div className="space-y-2">
+                  <Label>Allowed Resource Types</Label>
+                  <div className="grid grid-cols-2 md:grid-cols-5 gap-2 rounded-md border border-slate-800 p-3">
+                    {(['plugin', 'mod', 'config', 'world', 'datapack'] as const).map((resourceType) => (
+                      <label key={resourceType} className="flex items-center gap-2 text-sm">
+                        <Checkbox
+                          checked={allowedResources.includes(resourceType)}
+                          onCheckedChange={() => toggleAllowedResource(resourceType)}
+                        />
+                        <span className="capitalize">{resourceType}</span>
+                      </label>
+                    ))}
+                  </div>
+                </div>
+
+                {error && <p className="text-sm text-red-300">{error}</p>}
+              </div>
+              <DialogFooter>
+                <Button variant="outline" onClick={() => setIsCreateOpen(false)}>Cancel</Button>
+                <Button className="bg-blue-600 hover:bg-blue-700" onClick={createTemplate}>Create Template</Button>
+              </DialogFooter>
+            </DialogContent>
+          </Dialog>
         </div>
 
         {/* Search */}
@@ -139,7 +347,11 @@ export function GlobalTemplates() {
                     <Button asChild variant="outline">
                       <Link to={`/global/templates/${template.id}`}>View Details</Link>
                     </Button>
-                    <Button variant="outline">Deploy</Button>
+                    <DeployServerDialog
+                      fixedTemplateId={template.id}
+                      triggerLabel="Deploy"
+                      triggerVariant="outline"
+                    />
                   </div>
                 </CardContent>
               </Card>

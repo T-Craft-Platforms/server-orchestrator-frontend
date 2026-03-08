@@ -1,11 +1,12 @@
 import { useParams, Link } from 'react-router';
-import { ArrowLeft, Layers, Server, FileBox, Settings, Users, Plus } from 'lucide-react';
+import { ArrowLeft, Layers, Server, FileBox, Settings, Users } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card';
 import { Button } from '../components/ui/button';
 import { Badge } from '../components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '../components/ui/tabs';
 import { mockNamespaces, mockServers, mockResources } from '../data/mockData';
 import { Progress } from '../components/ui/progress';
+import { DeployServerDialog } from '../components/DeployServerDialog';
 
 export function NamespaceDetail() {
   const { id } = useParams();
@@ -57,10 +58,11 @@ export function NamespaceDetail() {
               </div>
             </div>
             
-            <Button className="bg-blue-600 hover:bg-blue-700">
-              <Plus className="w-4 h-4 mr-2" />
-              Deploy Server
-            </Button>
+            <DeployServerDialog
+              fixedNamespaceId={namespace.id}
+              triggerLabel="Deploy Server"
+              triggerClassName="bg-blue-600 hover:bg-blue-700"
+            />
           </div>
         </div>
       </div>
@@ -230,7 +232,7 @@ export function NamespaceDetail() {
               </CardHeader>
               <CardContent>
                 <div className="space-y-3">
-                  {['Admin', 'Developer', 'Operator', 'Viewer'].map((role) => (
+                  {['Admin', 'Reader'].map((role) => (
                     <div key={role} className="p-4 rounded-lg bg-slate-800/50 border border-slate-700">
                       <div className="flex items-center justify-between mb-2">
                         <h3 className="font-semibold">{role}</h3>
@@ -239,32 +241,17 @@ export function NamespaceDetail() {
                         </Badge>
                       </div>
                       <p className="text-sm text-slate-400 mb-3">
-                        {role === 'Admin' && 'Full access to all namespace resources and settings'}
-                        {role === 'Developer' && 'Can deploy and manage servers, upload resources'}
-                        {role === 'Operator' && 'Can start/stop servers and view logs'}
-                        {role === 'Viewer' && 'Read-only access to namespace resources'}
+                        {role === 'Admin' && 'Administrative access in this namespace'}
+                        {role === 'Reader' && 'Read-only access in this namespace'}
                       </p>
                       <div className="flex gap-1 flex-wrap">
                         {role === 'Admin' && (
                           <>
-                            <Badge className="text-xs bg-green-900/30 text-green-300 border-0">All Permissions</Badge>
+                            <Badge className="text-xs bg-green-900/30 text-green-300 border-0">namespace:admin</Badge>
                           </>
                         )}
-                        {role === 'Developer' && (
-                          <>
-                            <Badge className="text-xs bg-blue-900/30 text-blue-300 border-0">Deploy</Badge>
-                            <Badge className="text-xs bg-blue-900/30 text-blue-300 border-0">Upload</Badge>
-                            <Badge className="text-xs bg-blue-900/30 text-blue-300 border-0">Configure</Badge>
-                          </>
-                        )}
-                        {role === 'Operator' && (
-                          <>
-                            <Badge className="text-xs bg-purple-900/30 text-purple-300 border-0">Start/Stop</Badge>
-                            <Badge className="text-xs bg-purple-900/30 text-purple-300 border-0">View Logs</Badge>
-                          </>
-                        )}
-                        {role === 'Viewer' && (
-                          <Badge className="text-xs bg-slate-700 text-slate-300 border-0">Read Only</Badge>
+                        {role === 'Reader' && (
+                          <Badge className="text-xs bg-slate-700 text-slate-300 border-0">namespace:read</Badge>
                         )}
                       </div>
                     </div>

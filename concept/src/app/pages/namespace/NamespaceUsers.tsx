@@ -21,7 +21,7 @@ export function NamespaceUsers() {
   const namespace = mockNamespaces.find((ns) => ns.id === selectedNamespace);
   const [searchQuery, setSearchQuery] = useState('');
 
-  const namespaceRoles = mockRoles.filter((role) => role.namespaceId === selectedNamespace);
+  const namespaceRoles = mockRoles.filter((role) => role.namespaceId === 'namespace');
   const namespaceBindings = mockRoleBindings.filter((binding) => binding.namespaceId === selectedNamespace);
 
   const roleById = Object.fromEntries(mockRoles.map((role) => [role.id, role]));
@@ -81,7 +81,7 @@ export function NamespaceUsers() {
           </Card>
           <Card className="bg-slate-900 border-slate-800">
             <CardContent className="pt-6">
-              <p className="text-sm text-slate-400">Custom Roles</p>
+              <p className="text-sm text-slate-400">Namespace Roles</p>
               <p className="text-2xl font-bold mt-1">{namespaceRoles.length}</p>
             </CardContent>
           </Card>

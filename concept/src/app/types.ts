@@ -63,6 +63,7 @@ export interface Resource {
   labels: string[];
   uploadedAt: string;
   usedBy: number;
+  fileTree?: FileNode[];
 }
 
 export interface FileNode {
@@ -91,7 +92,6 @@ export interface User {
   displayName?: string;
   status?: 'active' | 'invited' | 'disabled';
   lastLogin?: string;
-  mfaEnabled?: boolean;
 }
 
 export interface RoleBinding {

@@ -11,7 +11,6 @@ import {
   HardDrive,
   Layers,
   Plus,
-  Rocket,
   Server,
   Terminal,
   Trash2,
@@ -29,6 +28,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '../components/ui/tabs'
 import { Textarea } from '../components/ui/textarea';
 import { mockNamespaces, mockServers, mockTemplates } from '../data/mockData';
 import { TemplatePlaceholder, TemplatePlaceholderType } from '../types';
+import { DeployServerDialog } from '../components/DeployServerDialog';
 import {
   getTemplateBlueprintFiles,
   getTemplatePlaceholders,
@@ -156,7 +156,12 @@ export function TemplateDetail() {
                 </div>
               </div>
             </div>
-            <Button className="bg-blue-600 hover:bg-blue-700"><Rocket className="w-4 h-4 mr-2" />Deploy</Button>
+            <DeployServerDialog
+              fixedTemplateId={template.id}
+              fixedNamespaceId={identifier}
+              triggerLabel="Deploy"
+              triggerClassName="bg-blue-600 hover:bg-blue-700"
+            />
           </div>
         </div>
       </div>

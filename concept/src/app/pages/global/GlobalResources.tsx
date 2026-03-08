@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Link } from 'react-router';
-import { Plus, Search, FileBox, Download, Trash2, Package, Globe } from 'lucide-react';
+import { Search, FileBox, Trash2, Package, Globe } from 'lucide-react';
 import { Card, CardContent } from '../../components/ui/card';
 import { Button } from '../../components/ui/button';
 import { Input } from '../../components/ui/input';
@@ -13,12 +13,15 @@ import {
   SelectTrigger,
   SelectValue,
 } from '../../components/ui/select';
+import { ResourceUploadDialog } from '../../components/ResourceUploadDialog';
+import type { Resource } from '../../types';
 
 export function GlobalResources() {
+  const [resources, setResources] = useState<Resource[]>([...mockResources]);
   const [searchQuery, setSearchQuery] = useState('');
   const [typeFilter, setTypeFilter] = useState<string>('all');
 
-  const filteredResources = mockResources.filter(resource => {
+  const filteredResources = resources.filter(resource => {
     const matchesSearch = resource.name.toLowerCase().includes(searchQuery.toLowerCase());
     const matchesType = typeFilter === 'all' || resource.type === typeFilter;
     return matchesSearch && matchesType;
@@ -47,10 +50,12 @@ export function GlobalResources() {
             </div>
             <p className="text-slate-400">Shared assets available across all namespaces</p>
           </div>
-          <Button className="bg-blue-600 hover:bg-blue-700">
-            <Plus className="w-4 h-4 mr-2" />
-            Upload Resource
-          </Button>
+          <ResourceUploadDialog
+            onCreate={(resource) => {
+              setResources((current) => [resource, ...current]);
+              mockResources.unshift(resource);
+            }}
+          />
         </div>
 
         {/* Filters */}
@@ -125,10 +130,6 @@ export function GlobalResources() {
                 <div className="flex gap-2">
                   <Button asChild size="sm" variant="outline" className="flex-1 h-8">
                     <Link to={`/global/resources/${resource.id}`}>Details</Link>
-                  </Button>
-                  <Button size="sm" variant="outline" className="flex-1 h-8">
-                    <Download className="w-3 h-3 mr-1" />
-                    Download
                   </Button>
                   <Button size="sm" variant="ghost" className="h-8 w-8 p-0 text-red-400 hover:text-red-300">
                     <Trash2 className="w-3 h-3" />

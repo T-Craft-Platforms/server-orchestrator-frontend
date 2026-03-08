@@ -1,3 +1,4 @@
+import { useMemo } from 'react';
 import { Link, useParams } from 'react-router';
 import {
   ArrowLeft,
@@ -14,6 +15,54 @@ import { Badge } from '../components/ui/badge';
 import { Button } from '../components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card';
 import { mockNamespaces, mockResources } from '../data/mockData';
+import type { FileNode, Resource } from '../types';
+
+function fallbackFileTree(resource: Resource): FileNode[] {
+  if (resource.type === 'plugin') {
+    return [
+      { name: `${resource.name}.jar`, path: `/plugins/${resource.name}.jar`, type: 'file', size: 2_400_000 },
+      { name: `${resource.name}.yml`, path: `/plugins/${resource.name}.yml`, type: 'file', size: 8_000 },
+    ];
+  }
+  if (resource.type === 'mod') {
+    return [
+      { name: `${resource.name}.jar`, path: `/mods/${resource.name}.jar`, type: 'file', size: 12_500_000 },
+      { name: 'dependencies', path: '/mods/dependencies', type: 'folder', children: [{ name: 'corelib.jar', path: '/mods/dependencies/corelib.jar', type: 'file', size: 3_100_000 }] },
+    ];
+  }
+  if (resource.type === 'world') {
+    return [
+      { name: 'level.dat', path: '/world/level.dat', type: 'file', size: 20_480 },
+      { name: 'region', path: '/world/region', type: 'folder', children: [{ name: 'r.0.0.mca', path: '/world/region/r.0.0.mca', type: 'file', size: 6_200_000 }] },
+      { name: 'data', path: '/world/data', type: 'folder', children: [{ name: 'map_0.dat', path: '/world/data/map_0.dat', type: 'file', size: 36_000 }] },
+    ];
+  }
+  if (resource.type === 'datapack') {
+    return [
+      { name: 'pack.mcmeta', path: '/datapack/pack.mcmeta', type: 'file', size: 600 },
+      { name: 'data', path: '/datapack/data', type: 'folder', children: [{ name: 'load.mcfunction', path: '/datapack/data/load.mcfunction', type: 'file', size: 1_200 }] },
+    ];
+  }
+  return [
+    { name: `${resource.name}.yml`, path: `/config/${resource.name}.yml`, type: 'file', size: 8_000 },
+    { name: 'README.md', path: '/config/README.md', type: 'file', size: 1_200 },
+  ];
+}
+
+function collectFiles(tree: FileNode[]): FileNode[] {
+  const out: FileNode[] = [];
+  const walk = (nodes: FileNode[]) => {
+    nodes.forEach((node) => {
+      if (node.type === 'file') {
+        out.push(node);
+      } else if (node.children?.length) {
+        walk(node.children);
+      }
+    });
+  };
+  walk(tree);
+  return out.sort((a, b) => a.path.localeCompare(b.path));
+}
 
 export function ResourceDetail() {
   const { id, identifier } = useParams();
@@ -52,6 +101,10 @@ export function ResourceDetail() {
     world: 'bg-green-900/40 text-green-300',
     datapack: 'bg-pink-900/40 text-pink-300',
   };
+  const fileTree = resource.fileTree && resource.fileTree.length > 0 ? resource.fileTree : fallbackFileTree(resource);
+  const files = useMemo(() => collectFiles(fileTree), [fileTree]);
+  const downloadResource = () => {};
+  const downloadFile = (_file: FileNode) => {};
 
   return (
     <div className="min-h-screen bg-slate-950 text-white">
@@ -89,9 +142,9 @@ export function ResourceDetail() {
               </div>
             </div>
             <div className="flex gap-2">
-              <Button variant="outline" className="border-slate-700">
+              <Button variant="outline" className="border-slate-700" onClick={downloadResource}>
                 <Download className="w-4 h-4 mr-2" />
-                Download
+                Download Resource
               </Button>
               <Button variant="ghost" className="text-red-400 hover:text-red-300">
                 <Trash2 className="w-4 h-4 mr-2" />
@@ -132,6 +185,39 @@ export function ResourceDetail() {
             </CardContent>
           </Card>
         </div>
+
+        <Card className="bg-slate-900 border-slate-800">
+          <CardHeader>
+            <CardTitle>Files</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-2 max-h-96 overflow-y-auto">
+              {files.map((fileNode) => {
+                const fileName = fileNode.name || fileNode.path.split('/').pop() || fileNode.path;
+                return (
+                  <div
+                    key={fileNode.path}
+                    className="rounded border border-slate-800 bg-slate-800/40 px-3 py-2 flex items-center justify-between gap-2"
+                  >
+                    <div className="min-w-0">
+                      <p className="text-sm font-medium text-slate-100 truncate">{fileName}</p>
+                      <p className="text-xs text-slate-400 truncate">{fileNode.path}</p>
+                    </div>
+                    <Button
+                      size="sm"
+                      variant="ghost"
+                      className="h-7 text-slate-300 hover:text-white"
+                      onClick={() => downloadFile(fileNode)}
+                    >
+                      <Download className="w-3 h-3 mr-1" />
+                      Download
+                    </Button>
+                  </div>
+                );
+              })}
+            </div>
+          </CardContent>
+        </Card>
 
         <Card className="bg-slate-900 border-slate-800">
           <CardHeader>

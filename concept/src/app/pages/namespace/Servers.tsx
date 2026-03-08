@@ -1,6 +1,6 @@
 import { Link } from 'react-router';
 import { useState } from 'react';
-import { Plus, Search, Server, Play, Square, RotateCw, Cpu, HardDrive, Users, Layers } from 'lucide-react';
+import { Search, Server, Play, Square, RotateCw, Cpu, HardDrive, Users, Layers } from 'lucide-react';
 import { Card, CardContent } from '../../components/ui/card';
 import { Button } from '../../components/ui/button';
 import { Input } from '../../components/ui/input';
@@ -8,6 +8,7 @@ import { Badge } from '../../components/ui/badge';
 import { Progress } from '../../components/ui/progress';
 import { mockServers, mockNamespaces } from '../../data/mockData';
 import { useNamespace } from '../../context/NamespaceContext';
+import { DeployServerDialog } from '../../components/DeployServerDialog';
 import {
   Select,
   SelectContent,
@@ -45,10 +46,11 @@ export function Servers() {
             </div>
             <p className="text-slate-400">Servers in {namespace.name}</p>
           </div>
-          <Button className="bg-blue-600 hover:bg-blue-700">
-            <Plus className="w-4 h-4 mr-2" />
-            Deploy Server
-          </Button>
+          <DeployServerDialog
+            fixedNamespaceId={selectedNamespace ?? undefined}
+            triggerLabel="Deploy Server"
+            triggerClassName="bg-blue-600 hover:bg-blue-700"
+          />
         </div>
 
         {/* Filters */}

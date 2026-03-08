@@ -12,6 +12,7 @@ import { GlobalResources } from "./pages/global/GlobalResources";
 import { NamespaceResources } from "./pages/namespace/NamespaceResources";
 import { GlobalSettings } from "./pages/global/GlobalSettings";
 import { GlobalUsers } from "./pages/global/GlobalUsers";
+import { GlobalUserDetail } from "./pages/global/GlobalUserDetail";
 import { NamespaceUsers } from "./pages/namespace/NamespaceUsers";
 import { TemplateDetail } from "./pages/TemplateDetail";
 import { ResourceDetail } from "./pages/ResourceDetail";
@@ -32,6 +33,7 @@ export const router = createBrowserRouter([
       { path: "global/resources", Component: GlobalResources },
       { path: "global/resources/:id", Component: ResourceDetail },
       { path: "global/users", Component: GlobalUsers },
+      { path: "global/users/:id", Component: GlobalUserDetail },
       { path: "global/settings", Component: GlobalSettings },
       
       // Namespace Routes

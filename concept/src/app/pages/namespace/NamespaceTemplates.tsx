@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Link } from 'react-router';
-import { Plus, Search, FileCode, Cpu, HardDrive, Layers } from 'lucide-react';
+import { Search, FileCode, Cpu, HardDrive, Layers } from 'lucide-react';
 import * as Icons from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '../../components/ui/card';
 import { Button } from '../../components/ui/button';
@@ -9,6 +9,7 @@ import { Badge } from '../../components/ui/badge';
 import { mockTemplates } from '../../data/mockData';
 import { useNamespace } from '../../context/NamespaceContext';
 import { mockNamespaces } from '../../data/mockData';
+import { DeployServerDialog } from '../../components/DeployServerDialog';
 
 export function NamespaceTemplates() {
   const [searchQuery, setSearchQuery] = useState('');
@@ -41,10 +42,11 @@ export function NamespaceTemplates() {
             </div>
             <p className="text-slate-400">Available templates for {namespace.name}</p>
           </div>
-          <Button className="bg-blue-600 hover:bg-blue-700">
-            <Plus className="w-4 h-4 mr-2" />
-            Deploy Server
-          </Button>
+          <DeployServerDialog
+            fixedNamespaceId={selectedNamespace ?? undefined}
+            triggerLabel="Deploy Server"
+            triggerClassName="bg-blue-600 hover:bg-blue-700"
+          />
         </div>
 
         {/* Search */}
@@ -147,9 +149,12 @@ export function NamespaceTemplates() {
                     <Button asChild variant="outline">
                       <Link to={`./${template.id}`}>View Details</Link>
                     </Button>
-                    <Button className="bg-blue-600 hover:bg-blue-700">
-                      Deploy
-                    </Button>
+                    <DeployServerDialog
+                      fixedTemplateId={template.id}
+                      fixedNamespaceId={selectedNamespace ?? undefined}
+                      triggerLabel="Deploy"
+                      triggerClassName="bg-blue-600 hover:bg-blue-700"
+                    />
                   </div>
                 </CardContent>
               </Card>

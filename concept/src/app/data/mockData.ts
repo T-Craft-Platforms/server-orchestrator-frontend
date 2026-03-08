@@ -349,63 +349,57 @@ export const mockUsers: User[] = [
     role: 'Global Admin',
     namespaces: ['ns-1', 'ns-2', 'ns-3'],
     status: 'active',
-    lastLogin: '2026-03-03T07:42:00Z',
-    mfaEnabled: true
+    lastLogin: '2026-03-03T07:42:00Z'
   },
   {
     id: 'usr-2',
     username: 'ops_julia',
     displayName: 'Julia Ops',
     email: 'julia.ops@example.com',
-    role: 'Namespace Operator',
+    role: 'Namespace Admin',
     namespaces: ['ns-1'],
     status: 'active',
-    lastLogin: '2026-03-02T21:15:00Z',
-    mfaEnabled: true
+    lastLogin: '2026-03-02T21:15:00Z'
   },
   {
     id: 'usr-3',
     username: 'dev_mark',
     displayName: 'Mark Dev',
     email: 'mark.dev@example.com',
-    role: 'Namespace Developer',
+    role: 'Namespace Reader',
     namespaces: ['ns-2', 'ns-3'],
     status: 'active',
-    lastLogin: '2026-03-01T18:05:00Z',
-    mfaEnabled: false
+    lastLogin: '2026-03-01T18:05:00Z'
   },
   {
     id: 'usr-4',
     username: 'auditor_lee',
     displayName: 'Lee Audit',
     email: 'lee.audit@example.com',
-    role: 'Global Auditor',
+    role: 'Global Reader',
     namespaces: ['ns-1', 'ns-2', 'ns-3'],
     status: 'active',
-    lastLogin: '2026-02-28T09:20:00Z',
-    mfaEnabled: true
+    lastLogin: '2026-02-28T09:20:00Z'
   },
   {
     id: 'usr-5',
     username: 'contractor_nina',
     displayName: 'Nina Contractor',
     email: 'nina.contractor@example.com',
-    role: 'Namespace Viewer',
+    role: 'Namespace Reader',
     namespaces: ['ns-3'],
     status: 'invited',
-    lastLogin: undefined,
-    mfaEnabled: false
+    lastLogin: undefined
   },
   {
     id: 'usr-6',
     username: 'legacy_bot',
     displayName: 'Legacy Bot',
     email: 'legacy.bot@example.com',
-    role: 'Namespace Operator',
+    role: 'Namespace Admin',
     namespaces: ['ns-1'],
     status: 'disabled',
-    lastLogin: '2025-12-18T11:11:00Z',
-    mfaEnabled: false
+    lastLogin: '2025-12-18T11:11:00Z'
   }
 ];
 
@@ -414,43 +408,29 @@ export const mockRoles: Role[] = [
     id: 'role-global-admin',
     name: 'Global Admin',
     namespaceId: 'global',
-    description: 'Full cluster-wide access including RBAC and policy management.',
-    permissions: ['cluster:*', 'namespaces:*', 'rbac:*']
+    description: 'Administrative access for global scope.',
+    permissions: ['global:admin']
   },
   {
-    id: 'role-global-auditor',
-    name: 'Global Auditor',
+    id: 'role-global-reader',
+    name: 'Global Reader',
     namespaceId: 'global',
-    description: 'Read-only visibility across all namespaces and audit events.',
-    permissions: ['cluster:read', 'namespaces:read', 'audit:read']
+    description: 'Read-only access for global scope.',
+    permissions: ['global:read']
   },
   {
-    id: 'role-ns-owner',
-    name: 'Namespace Owner',
-    namespaceId: 'ns-1',
-    description: 'Administrative control within a single namespace.',
-    permissions: ['namespace:admin', 'servers:*', 'resources:*', 'rbac:manage']
+    id: 'role-namespace-admin',
+    name: 'Namespace Admin',
+    namespaceId: 'namespace',
+    description: 'Administrative access within a namespace.',
+    permissions: ['namespace:admin']
   },
   {
-    id: 'role-ns-operator',
-    name: 'Namespace Operator',
-    namespaceId: 'ns-1',
-    description: 'Operate lifecycle and monitor workloads.',
-    permissions: ['servers:start', 'servers:stop', 'servers:restart', 'servers:read', 'resources:read']
-  },
-  {
-    id: 'role-ns-developer',
-    name: 'Namespace Developer',
-    namespaceId: 'ns-2',
-    description: 'Deploy and manage application resources.',
-    permissions: ['servers:deploy', 'servers:read', 'resources:upload', 'resources:read']
-  },
-  {
-    id: 'role-ns-viewer',
-    name: 'Namespace Viewer',
-    namespaceId: 'ns-3',
-    description: 'Read-only namespace access.',
-    permissions: ['servers:read', 'resources:read', 'logs:read']
+    id: 'role-namespace-reader',
+    name: 'Namespace Reader',
+    namespaceId: 'namespace',
+    description: 'Read-only access within a namespace.',
+    permissions: ['namespace:read']
   }
 ];
 
@@ -465,42 +445,42 @@ export const mockRoleBindings: RoleBinding[] = [
   {
     id: 'rb-2',
     userId: 'usr-4',
-    roleId: 'role-global-auditor',
+    roleId: 'role-global-reader',
     namespaceId: 'global',
     createdAt: '2025-12-02T12:00:00Z'
   },
   {
     id: 'rb-3',
     userId: 'usr-2',
-    roleId: 'role-ns-owner',
+    roleId: 'role-namespace-admin',
     namespaceId: 'ns-1',
     createdAt: '2026-01-08T09:30:00Z'
   },
   {
     id: 'rb-4',
     userId: 'usr-6',
-    roleId: 'role-ns-operator',
+    roleId: 'role-namespace-admin',
     namespaceId: 'ns-1',
     createdAt: '2025-10-14T14:10:00Z'
   },
   {
     id: 'rb-5',
     userId: 'usr-3',
-    roleId: 'role-ns-developer',
+    roleId: 'role-namespace-reader',
     namespaceId: 'ns-2',
     createdAt: '2026-01-22T10:00:00Z'
   },
   {
     id: 'rb-6',
     userId: 'usr-3',
-    roleId: 'role-ns-viewer',
+    roleId: 'role-namespace-reader',
     namespaceId: 'ns-3',
     createdAt: '2026-01-22T10:10:00Z'
   },
   {
     id: 'rb-7',
     userId: 'usr-5',
-    roleId: 'role-ns-viewer',
+    roleId: 'role-namespace-reader',
     namespaceId: 'ns-3',
     createdAt: '2026-02-26T16:45:00Z'
   }
