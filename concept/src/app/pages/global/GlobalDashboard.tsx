@@ -64,12 +64,12 @@ export function GlobalDashboard() {
 
           <Card className="bg-slate-900 border-slate-800">
             <CardHeader className="flex flex-row items-center justify-between pb-2">
-              <CardTitle className="text-sm font-medium text-slate-400">Global Templates</CardTitle>
+              <CardTitle className="text-sm font-medium text-slate-400">Templates</CardTitle>
               <FileCode className="w-4 h-4 text-green-500" />
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold">{mockTemplates.length}</div>
-              <p className="text-xs text-slate-400 mt-1">Available blueprints</p>
+              <p className="text-xs text-slate-400 mt-1">Shared blueprints</p>
             </CardContent>
           </Card>
 
@@ -194,7 +194,9 @@ export function GlobalDashboard() {
               {mockNamespaces.map((ns) => {
                 const nsServers = mockServers.filter(s => s.namespaceId === ns.id);
                 const running = nsServers.filter(s => s.status === 'running').length;
-                const percentage = (ns.serverCount / totalServers) * 100;
+                const stopped = Math.max(nsServers.length - running, 0);
+                const namespaceTotalPct = totalServers > 0 ? (nsServers.length / totalServers) * 100 : 0;
+                const runningWithinNamespacePct = nsServers.length > 0 ? (running / nsServers.length) * 100 : 0;
                 
                 return (
                   <div key={ns.id}>
@@ -202,12 +204,23 @@ export function GlobalDashboard() {
                       <div className="flex items-center gap-2">
                         <span className="text-sm font-medium">{ns.name}</span>
                         <Badge variant="outline" className="text-xs border-slate-700">
-                          {running}/{ns.serverCount} running
+                          {running} running / {nsServers.length} total
                         </Badge>
                       </div>
-                      <span className="text-sm text-slate-400">{percentage.toFixed(0)}%</span>
+                      <span className="text-sm text-slate-400">{namespaceTotalPct.toFixed(0)}% of cluster</span>
                     </div>
-                    <Progress value={percentage} className="h-2" />
+                    <div className="h-2 w-full overflow-hidden rounded-full bg-slate-800">
+                      <div
+                        className="relative h-full overflow-hidden rounded-full"
+                        style={{
+                          width: `${namespaceTotalPct}%`,
+                          backgroundImage:
+                            'repeating-linear-gradient(135deg, rgba(148,163,184,0.35) 0px, rgba(148,163,184,0.35) 6px, rgba(71,85,105,0.35) 6px, rgba(71,85,105,0.35) 12px)',
+                        }}
+                      >
+                        <div className="h-full bg-emerald-500" style={{ width: `${runningWithinNamespacePct}%` }} />
+                      </div>
+                    </div>
                   </div>
                 );
               })}
