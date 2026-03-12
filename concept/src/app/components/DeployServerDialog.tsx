@@ -6,6 +6,7 @@ import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, D
 import { Input } from './ui/input';
 import { Label } from './ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from './ui/select';
+import ProButton from './ui/pro-button';
 import { mockNamespaces, mockServers, mockTemplates } from '../data/mockData';
 import type { Server, Template } from '../types';
 
@@ -217,9 +218,13 @@ export function DeployServerDialog({
           <Button variant="outline" onClick={() => setOpen(false)}>
             Cancel
           </Button>
-          <Button className="bg-blue-600 hover:bg-blue-700" onClick={deploy}>
-            Deploy
-          </Button>
+          <ProButton
+            text="Start Deployment"
+            size="xs"
+            pixelColor="sky"
+            className="bg-none bg-primary text-primary-foreground hover:bg-primary/90 dark:bg-secondary dark:text-secondary-foreground dark:hover:bg-secondary/80 [&>span]:text-inherit"
+            onClick={deploy}
+          />
         </DialogFooter>
       </DialogContent>
     </Dialog>
