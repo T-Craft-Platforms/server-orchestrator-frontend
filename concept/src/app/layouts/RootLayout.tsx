@@ -95,9 +95,14 @@ export function RootLayout() {
       return searchable.includes(normalizedNamespaceSearch);
     });
   }, [normalizedNamespaceSearch]);
-  const namespaceVisual = useMemo(() => (
-    activeNamespaceId ? getNamespaceVisual(activeNamespaceId) : null
-  ), [activeNamespaceId]);
+  const namespaceVisual = useMemo(() => {
+    if (!activeNamespaceId) {
+      return null;
+    }
+
+    const activeNamespace = mockNamespaces.find((namespace) => namespace.id === activeNamespaceId);
+    return getNamespaceVisual(activeNamespace ?? activeNamespaceId);
+  }, [activeNamespaceId]);
   const showNamespaceBackdrop = isNamespaceRoute && preferences.namespaceBackdropEnabled && Boolean(namespaceVisual);
 
   const isActive = (href: string) => {
@@ -364,7 +369,12 @@ export function RootLayout() {
           <div className="pointer-events-none absolute inset-0 overflow-hidden">
             <div
               className="absolute -inset-24 scale-110 opacity-70 blur-3xl"
-              style={{ backgroundImage: namespaceVisual.pageBackdrop }}
+              style={{
+                backgroundImage: namespaceVisual.pageBackdrop,
+                backgroundSize: 'cover',
+                backgroundPosition: 'center',
+                backgroundRepeat: 'no-repeat',
+              }}
             />
             <div className="absolute inset-0 bg-slate-950/60" />
           </div>

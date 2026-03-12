@@ -10,6 +10,8 @@ export interface Namespace {
   serverCount: number;
   resourceCount: number;
   labels: string[];
+  coverImage?: string;
+  accentColor?: string;
 }
 
 export interface Server {

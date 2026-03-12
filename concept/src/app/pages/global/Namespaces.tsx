@@ -10,15 +10,84 @@ import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, D
 import { Label } from '../../components/ui/label';
 import { Textarea } from '../../components/ui/textarea';
 import { getNamespaceVisual } from '../../utils/namespaceVisuals';
+import type { Namespace } from '../../types';
+
+const HEX_COLOR_PATTERN = /^#(?:[0-9a-fA-F]{3}|[0-9a-fA-F]{6})$/;
+
+function normalizeHexColor(value: string) {
+  const normalized = value.trim();
+  if (!HEX_COLOR_PATTERN.test(normalized)) {
+    return null;
+  }
+
+  if (normalized.length === 4) {
+    const [_, r, g, b] = normalized;
+    return `#${r}${r}${g}${g}${b}${b}`.toLowerCase();
+  }
+
+  return normalized.toLowerCase();
+}
+
+function generateNamespaceId(namespaces: Namespace[]) {
+  const maxId = namespaces.reduce((max, namespace) => {
+    const match = namespace.id.match(/^ns-(\d+)$/);
+    if (!match) {
+      return max;
+    }
+    return Math.max(max, Number.parseInt(match[1], 10));
+  }, 0);
+
+  return `ns-${maxId + 1}`;
+}
 
 export function Namespaces() {
   const [searchQuery, setSearchQuery] = useState('');
   const [isCreateOpen, setIsCreateOpen] = useState(false);
+  const [namespaces, setNamespaces] = useState<Namespace[]>(() => [...mockNamespaces]);
+  const [name, setName] = useState('');
+  const [description, setDescription] = useState('');
+  const [labels, setLabels] = useState('');
+  const [coverImage, setCoverImage] = useState('');
+  const [accentColor, setAccentColor] = useState('#0ea5e9');
 
-  const filteredNamespaces = mockNamespaces.filter(ns =>
+  const filteredNamespaces = namespaces.filter(ns =>
     ns.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
     ns.description.toLowerCase().includes(searchQuery.toLowerCase())
   );
+
+  const createNamespace = () => {
+    const trimmedName = name.trim();
+    if (!trimmedName) {
+      return;
+    }
+
+    const parsedLabels = labels
+      .split(',')
+      .map((label) => label.trim())
+      .filter(Boolean);
+    const normalizedAccentColor = normalizeHexColor(accentColor);
+    const namespace: Namespace = {
+      id: generateNamespaceId(namespaces),
+      name: trimmedName,
+      description: description.trim() || 'No description provided',
+      createdAt: new Date().toISOString(),
+      serverCount: 0,
+      resourceCount: 0,
+      labels: parsedLabels,
+      coverImage: coverImage.trim() || undefined,
+      accentColor: normalizedAccentColor ?? undefined,
+    };
+
+    setNamespaces((current) => [namespace, ...current]);
+    mockNamespaces.unshift(namespace);
+
+    setName('');
+    setDescription('');
+    setLabels('');
+    setCoverImage('');
+    setAccentColor('#0ea5e9');
+    setIsCreateOpen(false);
+  };
 
   return (
     <div className="min-h-screen bg-slate-950 text-white p-4 sm:p-6">
@@ -50,6 +119,8 @@ export function Namespaces() {
                     id="name"
                     placeholder="production-network"
                     className="bg-slate-800 border-slate-700"
+                    value={name}
+                    onChange={(event) => setName(event.target.value)}
                   />
                 </div>
                 <div className="space-y-2">
@@ -58,6 +129,8 @@ export function Namespaces() {
                     id="description"
                     placeholder="Main production Minecraft network"
                     className="bg-slate-800 border-slate-700"
+                    value={description}
+                    onChange={(event) => setDescription(event.target.value)}
                   />
                 </div>
                 <div className="space-y-2">
@@ -66,14 +139,44 @@ export function Namespaces() {
                     id="labels"
                     placeholder="production, main"
                     className="bg-slate-800 border-slate-700"
+                    value={labels}
+                    onChange={(event) => setLabels(event.target.value)}
                   />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="cover-image">Cover Image URL (optional)</Label>
+                  <Input
+                    id="cover-image"
+                    placeholder="https://images.example.com/namespace-cover.jpg"
+                    className="bg-slate-800 border-slate-700"
+                    value={coverImage}
+                    onChange={(event) => setCoverImage(event.target.value)}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="accent-color">Accent Color</Label>
+                  <div className="flex gap-2">
+                    <Input
+                      id="accent-color"
+                      type="color"
+                      className="h-10 w-14 cursor-pointer border-slate-700 bg-slate-800 p-1"
+                      value={normalizeHexColor(accentColor) ?? '#0ea5e9'}
+                      onChange={(event) => setAccentColor(event.target.value)}
+                    />
+                    <Input
+                      placeholder="#0ea5e9"
+                      className="bg-slate-800 border-slate-700"
+                      value={accentColor}
+                      onChange={(event) => setAccentColor(event.target.value)}
+                    />
+                  </div>
                 </div>
               </div>
               <DialogFooter>
                 <Button variant="outline" onClick={() => setIsCreateOpen(false)}>
                   Cancel
                 </Button>
-                <Button className="bg-blue-600 hover:bg-blue-700">
+                <Button className="bg-blue-600 hover:bg-blue-700" onClick={createNamespace} disabled={!name.trim()}>
                   Create Project
                 </Button>
               </DialogFooter>
@@ -97,18 +200,26 @@ export function Namespaces() {
         {/* Projects Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {filteredNamespaces.map((namespace) => {
-            const visual = getNamespaceVisual(namespace.id);
+            const visual = getNamespaceVisual(namespace);
             return (
               <Link key={namespace.id} to={`/namespace/${namespace.id}/dashboard`}>
                 <Card className="group overflow-hidden border-slate-800/80 bg-slate-900/85 h-full transition-all duration-300 hover:border-slate-600 hover:shadow-[0_14px_40px_-22px_rgba(14,165,233,0.45)]">
                   <div className="relative h-36 overflow-hidden">
-                    <div className="absolute inset-0 scale-105 transition-transform duration-300 group-hover:scale-110" style={{ backgroundImage: visual.cardImage }} />
+                    <div
+                      className="absolute inset-0 scale-105 transition-transform duration-300 group-hover:scale-110"
+                      style={{
+                        backgroundImage: visual.cardImage,
+                        backgroundSize: 'cover',
+                        backgroundPosition: 'center',
+                        backgroundRepeat: 'no-repeat',
+                      }}
+                    />
                     <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-900/35 to-transparent" />
                     <div className="absolute left-4 right-4 top-4 flex items-start justify-between">
                       <Badge variant="outline" className="border-white/30 bg-slate-950/40 text-slate-100">
                         {namespace.id}
                       </Badge>
-                      <div className="rounded-lg p-2 backdrop-blur-md" style={{ backgroundColor: 'rgba(2, 6, 23, 0.35)' }}>
+                      <div className="rounded-lg p-2 backdrop-blur-md" style={{ backgroundColor: visual.accent }}>
                         <Layers className="w-5 h-5 text-slate-100" />
                       </div>
                     </div>
