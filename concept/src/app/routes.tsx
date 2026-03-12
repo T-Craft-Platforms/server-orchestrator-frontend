@@ -18,6 +18,22 @@ import { ResourceDetail } from "./pages/ResourceDetail";
 import { NamespaceSettings } from "./pages/namespace/NamespaceSettings";
 import { UserSettings } from "./pages/user/UserSettings";
 
+const ROOT_LEVEL_ROUTE_PREFIXES = new Set(["global", "namespace", "project", "user"]);
+
+function detectRouterBasename(): string {
+  if (typeof window === "undefined") {
+    return "/";
+  }
+
+  const [firstSegment] = window.location.pathname.split("/").filter(Boolean);
+
+  if (!firstSegment || ROOT_LEVEL_ROUTE_PREFIXES.has(firstSegment)) {
+    return "/";
+  }
+
+  return `/${firstSegment}`;
+}
+
 function ProjectRouteRedirect() {
   const { id } = useParams();
   if (!id) {
@@ -26,52 +42,55 @@ function ProjectRouteRedirect() {
   return <Navigate to={`/namespace/${id}/dashboard`} replace />;
 }
 
-export const router = createBrowserRouter([
-  {
-    path: "/",
-    Component: RootLayout,
-    children: [
-      { index: true, element: <Navigate to="/global/dashboard" replace /> },
-      
-      // Global Routes
-      { path: "global/dashboard", Component: GlobalDashboard },
-      { path: "global/projects", Component: Namespaces },
-      { path: "global/projects/:id", Component: ProjectRouteRedirect },
-      { path: "global/namespaces", Component: Namespaces },
-      { path: "global/namespaces/:id", Component: ProjectRouteRedirect },
-      { path: "global/templates", Component: GlobalTemplates },
-      { path: "global/templates/:id", Component: TemplateDetail },
-      { path: "global/resources", Component: GlobalResources },
-      { path: "global/resources/:id", Component: ResourceDetail },
-      { path: "global/users", Component: GlobalUsers },
-      { path: "global/users/:id", Component: GlobalUserDetail },
-      { path: "global/settings", Component: GlobalSettings },
-      { path: "user/settings", Component: UserSettings },
-      
-      // Namespace Routes
-      { path: "namespace/:identifier/dashboard", Component: NamespaceDashboard },
-      { path: "namespace/:identifier/servers", Component: Servers },
-      { path: "namespace/:identifier/servers/:id", Component: ServerDetail },
-      { path: "namespace/:identifier/templates", Component: NamespaceTemplates },
-      { path: "namespace/:identifier/templates/:id", Component: TemplateDetail },
-      { path: "namespace/:identifier/resources", Component: NamespaceResources },
-      { path: "namespace/:identifier/resources/:id", Component: ResourceDetail },
-      { path: "namespace/:identifier/users", Component: NamespaceUsers },
-      { path: "namespace/:identifier/settings", Component: NamespaceSettings },
+export const router = createBrowserRouter(
+  [
+    {
+      path: "/",
+      Component: RootLayout,
+      children: [
+        { index: true, element: <Navigate to="/global/dashboard" replace /> },
 
-      // Project Aliases
-      { path: "project/:identifier/dashboard", Component: NamespaceDashboard },
-      { path: "project/:identifier/servers", Component: Servers },
-      { path: "project/:identifier/servers/:id", Component: ServerDetail },
-      { path: "project/:identifier/templates", Component: NamespaceTemplates },
-      { path: "project/:identifier/templates/:id", Component: TemplateDetail },
-      { path: "project/:identifier/resources", Component: NamespaceResources },
-      { path: "project/:identifier/resources/:id", Component: ResourceDetail },
-      { path: "project/:identifier/users", Component: NamespaceUsers },
-      { path: "project/:identifier/settings", Component: NamespaceSettings },
+        // Global Routes
+        { path: "global/dashboard", Component: GlobalDashboard },
+        { path: "global/projects", Component: Namespaces },
+        { path: "global/projects/:id", Component: ProjectRouteRedirect },
+        { path: "global/namespaces", Component: Namespaces },
+        { path: "global/namespaces/:id", Component: ProjectRouteRedirect },
+        { path: "global/templates", Component: GlobalTemplates },
+        { path: "global/templates/:id", Component: TemplateDetail },
+        { path: "global/resources", Component: GlobalResources },
+        { path: "global/resources/:id", Component: ResourceDetail },
+        { path: "global/users", Component: GlobalUsers },
+        { path: "global/users/:id", Component: GlobalUserDetail },
+        { path: "global/settings", Component: GlobalSettings },
+        { path: "user/settings", Component: UserSettings },
 
-      // Fallback
-      { path: "*", element: <Navigate to="/global/dashboard" replace /> },
-    ],
-  },
-]);
+        // Namespace Routes
+        { path: "namespace/:identifier/dashboard", Component: NamespaceDashboard },
+        { path: "namespace/:identifier/servers", Component: Servers },
+        { path: "namespace/:identifier/servers/:id", Component: ServerDetail },
+        { path: "namespace/:identifier/templates", Component: NamespaceTemplates },
+        { path: "namespace/:identifier/templates/:id", Component: TemplateDetail },
+        { path: "namespace/:identifier/resources", Component: NamespaceResources },
+        { path: "namespace/:identifier/resources/:id", Component: ResourceDetail },
+        { path: "namespace/:identifier/users", Component: NamespaceUsers },
+        { path: "namespace/:identifier/settings", Component: NamespaceSettings },
+
+        // Project Aliases
+        { path: "project/:identifier/dashboard", Component: NamespaceDashboard },
+        { path: "project/:identifier/servers", Component: Servers },
+        { path: "project/:identifier/servers/:id", Component: ServerDetail },
+        { path: "project/:identifier/templates", Component: NamespaceTemplates },
+        { path: "project/:identifier/templates/:id", Component: TemplateDetail },
+        { path: "project/:identifier/resources", Component: NamespaceResources },
+        { path: "project/:identifier/resources/:id", Component: ResourceDetail },
+        { path: "project/:identifier/users", Component: NamespaceUsers },
+        { path: "project/:identifier/settings", Component: NamespaceSettings },
+
+        // Fallback
+        { path: "*", element: <Navigate to="/global/dashboard" replace /> },
+      ],
+    },
+  ],
+  { basename: detectRouterBasename() },
+);

@@ -1,0 +1,16 @@
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+  RewriteBase /
+
+  # If app is mounted under a dynamic first path segment (e.g. /<id>/assets/*),
+  # strip that segment for static asset lookup.
+  RewriteRule ^[^/]+/(assets/.*)$ $1 [L,NC]
+
+  # Serve existing files/directories directly.
+  RewriteCond %{REQUEST_FILENAME} -f [OR]
+  RewriteCond %{REQUEST_FILENAME} -d
+  RewriteRule ^ - [L]
+
+  # SPA fallback for all other routes.
+  RewriteRule ^ index.html [L]
+</IfModule>
